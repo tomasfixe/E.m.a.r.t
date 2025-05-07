@@ -85,7 +85,7 @@ namespace E.m.a.r.t.Models
 
   Definição dos relacionamentos
   ** */
-
+        /*
         /// <summary>
         /// Lista das fotografias que são propriedade do 
         /// utilizador
@@ -102,7 +102,7 @@ namespace E.m.a.r.t.Models
         /// </summary>
         public ICollection<Compras> ListaCompras { get; set; } = [];
 
-
+        */
 
     }
 }

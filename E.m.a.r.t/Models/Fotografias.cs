@@ -65,8 +65,12 @@ namespace E.m.a.r.t.Models
         public string PrecoAux { get; set; } = string.Empty;
 
 
+        /**
+         * 
+         */
 
 
+        
 
         /* *
 
@@ -76,7 +80,7 @@ namespace E.m.a.r.t.Models
 
         // Relacionamentos 1-N
 
-
+        /*
         /// <summary>
         /// FK para a tabela das Categorias
         /// </summary>
@@ -111,7 +115,6 @@ namespace E.m.a.r.t.Models
         /// Lista de 'compras' que compraram a fotografia
         /// </summary>
         public ICollection<Compras> ListaCompras { get; set; } = [];
-
-
+       */
     }
 }
