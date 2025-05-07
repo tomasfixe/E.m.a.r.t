@@ -84,18 +84,18 @@ namespace E.m.a.r.t.Models
         /// <summary>
         /// FK para a tabela das Categorias
         /// </summary>
-        [ForeignKey(nameof(Categoria))]
+        ///[ForeignKey(nameof(Categoria))] AQUI
         public int CategoriaFK { get; set; }
         /// <summary>
         /// FK para as Categorias
         /// </summary>
         [ValidateNever]
-        public Categorias Categoria { get; set; } = null!;
+        ///public Categorias Categoria { get; set; } = null!; AQUI
 
         /// <summary>
         /// FK para referenciar o Dono da fotografia
         /// </summary>
-        [ForeignKey(nameof(Dono))]
+        ///[ForeignKey(nameof(Dono))] AQUI
         public int DonoFK { get; set; }
         /// <summary>
         /// FK para referenciar o Dono da fotografia
@@ -109,7 +109,7 @@ namespace E.m.a.r.t.Models
         /// <summary>
         /// Lista de 'gostos' de uma fotografia
         /// </summary>
-        public ICollection<Gostos> ListaGostos { get; set; } = [];
+        ///public ICollection<Gostos> ListaGostos { get; set; } = []; AQUI
 
         /// <summary>
         /// Lista de 'compras' que compraram a fotografia

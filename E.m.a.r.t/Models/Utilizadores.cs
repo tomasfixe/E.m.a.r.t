@@ -95,7 +95,7 @@ namespace E.m.a.r.t.Models
         /// <summary>
         /// Lista dos 'gostos' de fotografias do utilizador
         /// </summary>
-        public ICollection<Gostos> ListaGostos { get; set; } = [];
+        ///public ICollection<Gostos> ListaGostos { get; set; } = []; AQUI
 
         /// <summary>
         /// Lista das fotografias compradas pelo utilizador
