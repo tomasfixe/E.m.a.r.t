@@ -40,7 +40,7 @@ namespace E.m.a.r.t.Models
         public string? CodPostal { get; set; }
         /* exemplo de exp. regulares sobre o Código Postal
 
-  [1-9][0-9]{3}-[0-9]{3} [A-Za-z ]+  --> Portugal
+  [1-9][0-9]{3}-[0-9]{3} [A-Za-z ]+  --> Portugal kjhkugkjugk
   [1-9][0-9]{3,4}-[0-9]{3,4}( [A-Za-z ]*)?  --> fora de Portugal*/
 
         /// <summary>
