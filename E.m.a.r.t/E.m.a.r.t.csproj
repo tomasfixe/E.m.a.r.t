@@ -9,9 +9,6 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Identity\Pages\index.cshtml.cs" />
-    <Compile Remove="Models\Compras.cs" />
-    <Compile Remove="Models\Fotografias.cs" />
-    <Compile Remove="Models\Utilizadores.cs" />
   </ItemGroup>
 
   <ItemGroup>
