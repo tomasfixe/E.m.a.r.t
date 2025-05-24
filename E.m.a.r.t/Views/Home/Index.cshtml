@@ -1,8 +1,104 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<E.m.a.r.t.Models.Fotografias>
+@{
+    ViewData["Title"] = "Página Inicial";
+    var novaFoto = ViewBag.NovaFoto as E.m.a.r.t.Models.Fotografias;
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+<h2>Nova Fotografia</h2>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var state in ViewData.ModelState)
+            {
+                foreach (var error in state.Value.Errors)
+                {
+                    <li>@state.Key: @error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
 }
 
-<div class="text-center">
-    <h1 class="display-4">E.M.A.R.T.</h1>
-    <p>Bem vindo ao site, isto é um teste</p>
-</div>
+<form asp-action="Index" method="post" class="mb-4">
+    <div class="form-group">
+        <label asp-for="@novaFoto.Titulo"></label>
+        <input asp-for="@novaFoto.Titulo" class="form-control" />
+        <span asp-validation-for="@novaFoto.Titulo" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@novaFoto.Descricao"></label>
+        <input asp-for="@novaFoto.Descricao" class="form-control" />
+        <span asp-validation-for="@novaFoto.Descricao" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@novaFoto.Data"></label>
+        <input asp-for="@novaFoto.Data" type="date" class="form-control" />
+        <span asp-validation-for="@novaFoto.Data" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@novaFoto.Preco"></label>
+        <input asp-for="@novaFoto.Preco" class="form-control" type="text" />
+        <span asp-validation-for="@novaFoto.Preco" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@novaFoto.Ficheiro"></label>
+        <input asp-for="@novaFoto.Ficheiro" class="form-control" />
+        <span asp-validation-for="@novaFoto.Ficheiro" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-2">Adicionar</button>
+</form>
+
+<h2>Lista de Fotografias</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Descrição</th>
+            <th>Data</th>
+            <th>Preço</th>
+            <th>Ficheiro</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var foto in Model)
+        {
+            <tr>
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" name="Id" value="@foto.Id" />
+                <td><input type="text" name="Titulo" value="@foto.Titulo" class="form-control" /></td>
+                <td><input type="text" name="Descricao" value="@foto.Descricao" class="form-control" /></td>
+                <td><input type="date" name="Data" value="@foto.Data.ToString("yyyy-MM-dd")" class="form-control" /></td>
+                <td><input type="number" name="Preco" step="0.01" value="@foto.Preco" class="form-control" /></td>
+                <td><input type="text" name="Ficheiro" value="@foto.Ficheiro" class="form-control" /></td>
+                <td>
+                    <button type="submit" class="btn btn-sm btn-warning">Guardar</button>
+
+                    <form asp-action="Delete" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@foto.Id" />
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Eliminar esta fotografia?');">
+                            Eliminar
+                        </button>
+                    </form>
+                </td>
+                </form>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
