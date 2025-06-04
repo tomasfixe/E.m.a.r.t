@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\NovaPasta\**" />
+    <Content Remove="wwwroot\NovaPasta\**" />
+    <EmbeddedResource Remove="wwwroot\NovaPasta\**" />
+    <None Remove="wwwroot\NovaPasta\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Areas\Identity\Pages\index.cshtml.cs" />
   </ItemGroup>
 
