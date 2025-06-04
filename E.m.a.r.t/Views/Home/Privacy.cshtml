@@ -1,6 +1,31 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
+﻿<!DOCTYPE html>
+<link rel="stylesheet" href="About.css" />
+<main>
+    <section class="about">
+        <div class="about-text">
+            <h1>About Me</h1>
+            <p>
+                Emanuel Ferreira (Torres Vedras, 2003) completed his Visual Arts degree in 2022.
+                That same year, he entered the Photography Degree at ESTT, Instituto Politécnico de Tomar, in which he is a finalist.
+                <br /><br />
+                His areas of greatest interest in photography are fashion and product.
+            </p>
+        </div>
+        <div class="about-img">
+            <img src="teste.jpg" alt="Emanuel Ferreira" />
+        </div>
+    </section>
 
-<p>Use this page to detail your site's privacy policy.</p>
+    <section class="contact">
+        <h2>Contact me</h2>
+        <form>
+            <div class="name-fields">
+                <input type="text" placeholder="Insert your name" name="first-name" required />
+                <input type="text" placeholder="Insert your name" name="last-name" required />
+            </div>
+            <input type="email" placeholder="Insert your email" name="email" required />
+            <textarea placeholder="Enter your question or message" name="message" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+</main>
