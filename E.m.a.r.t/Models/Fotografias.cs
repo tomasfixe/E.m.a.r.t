@@ -7,12 +7,13 @@ namespace E.m.a.r.t.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O título é obrigatório.")]
         public string Titulo { get; set; }
 
         public string? Descricao { get; set; }
 
         [Display(Name = "Ficheiro da Imagem")]
+        [Required(ErrorMessage = "O ficheiro da imagem é obrigatório.")]
         public string Ficheiro { get; set; }
 
         [Display(Name = "Data da Foto")]
@@ -22,7 +23,6 @@ namespace E.m.a.r.t.Models
 
         [Column(TypeName = "decimal(10,2)")]
         [Required(ErrorMessage = "O preço é obrigatório.")]
-        [Range(0.01, 9999999.99, ErrorMessage = "Preço inválido.")]
         public decimal Preco { get; set; }
 
     }
