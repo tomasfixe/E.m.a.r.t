@@ -1,6 +1,6 @@
 ﻿namespace E.m.a.r.t.Models
 {
-    public class Colecoes
+    public class Colecao
     {
     }
 }

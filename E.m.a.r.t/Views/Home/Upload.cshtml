@@ -1,8 +1,10 @@
-﻿@model IEnumerable<E.m.a.r.t.Models.Fotografias>
+﻿@model Tuple<IEnumerable<E.m.a.r.t.Models.Fotografias>, E.m.a.r.t.Models.Colecao>
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    ViewData["Title"] = "Upload de Fotografia";
+    var listaFotos = Model.Item1;
+    var novaColecao = Model.Item2;
     var novaFoto = ViewBag.NovaFoto as E.m.a.r.t.Models.Fotografias;
 }
 
@@ -23,6 +25,7 @@
     </div>
 }
 
+<!-- Formulário de upload de fotografia -->
 <form asp-action="Upload" method="post" class="mb-4">
     <div class="form-group">
         <label asp-for="@novaFoto.Titulo"></label>
@@ -54,11 +57,40 @@
         <span asp-validation-for="@novaFoto.Ficheiro" class="text-danger"></span>
     </div>
 
+    <!-- Dropdown de Coleções -->
+    <div class="form-group">
+        <label asp-for="@novaFoto.ColecaoFK">Coleção</label>
+        <select asp-for="@novaFoto.ColecaoFK" class="form-control"
+                asp-items="@(new SelectList(ViewBag.ListaColecoes, "Id", "Nome"))">
+            <option value="">-- Sem coleção --</option>
+        </select>
+        <span asp-validation-for="@novaFoto.ColecaoFK" class="text-danger"></span>
+    </div>
+
     <button type="submit" class="btn btn-success mt-2">Adicionar</button>
 </form>
 
 <hr />
+<!-- Formulário de criação de coleção -->
+<h2>Nova Coleção</h2>
 
+<form asp-action="CriarColecao" method="post" class="mb-4">
+    <div class="form-group">
+        <label asp-for="@novaColecao.Nome">Nome da Coleção</label>
+        <input asp-for="@novaColecao.Nome" class="form-control" />
+        <span asp-validation-for="@novaColecao.Nome" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@novaColecao.Descricao">Descrição</label>
+        <textarea asp-for="@novaColecao.Descricao" class="form-control"></textarea>
+        <span asp-validation-for="@novaColecao.Descricao" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Criar Coleção</button>
+</form>
+
+<!-- Tabela de fotografias -->
 <h2>Lista de Fotografias</h2>
 
 <table class="table table-bordered">
@@ -73,7 +105,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var foto in Model)
+        @foreach (var foto in Model.Item1)
         {
             <tr>
                 <td colspan="6">

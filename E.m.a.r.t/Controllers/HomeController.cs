@@ -16,7 +16,6 @@ namespace E.m.a.r.t.Controllers
             _logger = logger;
         }
 
-        
         [HttpGet]
         public IActionResult Index()
         {
@@ -27,9 +26,14 @@ namespace E.m.a.r.t.Controllers
         [HttpGet]
         public IActionResult Upload()
         {
+            // Lista de coleções
+            ViewBag.ListaColecoes = _context.Colecoes.ToList();
+
+            // Lista de fotografias e nova coleção para o formulário
             ViewBag.NovaFoto = new Fotografias();
             var lista = _context.Fotografias.ToList();
-            return View(lista); 
+            var novaColecao = new Colecao();
+            return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
 
         // POST: Upload de nova fotografia
@@ -41,12 +45,15 @@ namespace E.m.a.r.t.Controllers
             {
                 _context.Fotografias.Add(novaFoto);
                 _context.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Upload");
             }
 
+            // Passar a lista de coleções para a ViewBag
+            ViewBag.ListaColecoes = _context.Colecoes.ToList();
             ViewBag.NovaFoto = novaFoto;
             var lista = _context.Fotografias.ToList();
-            return View(lista);
+            var novaColecao = new Colecao();
+            return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
 
         // POST: Eliminar fotografia
@@ -65,6 +72,25 @@ namespace E.m.a.r.t.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // POST: Criar coleção
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CriarColecao(Colecao novaColecao)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Colecoes.Add(novaColecao);
+                _context.SaveChanges();
+                return RedirectToAction("Upload");
+            }
+
+            // Passar a lista de coleções para a ViewBag também no POST
+            ViewBag.ListaColecoes = _context.Colecoes.ToList();
+            ViewBag.NovaFoto = new Fotografias();
+            var lista = _context.Fotografias.ToList();
+            return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
+        }
+
         public IActionResult Privacy()
         {
             return View();
@@ -77,3 +103,4 @@ namespace E.m.a.r.t.Controllers
         }
     }
 }
+
