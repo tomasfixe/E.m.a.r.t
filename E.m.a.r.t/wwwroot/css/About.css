@@ -1,59 +1,104 @@
-﻿
+﻿/* Reset básico */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    color: #000;
+}
+
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* About */
 .about {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 50px;
+    gap: 40px;
+    margin-bottom: 60px;
 }
 
 .about-text {
     flex: 1;
-    margin-right: 20px;
+    min-width: 280px;
 }
 
     .about-text h1 {
-        font-size: 2em;
-        margin-bottom: 10px;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
     }
 
     .about-text p {
-        font-size: 0.95em;
-        line-height: 1.5;
+        font-size: 1rem;
+        line-height: 1.6;
     }
 
 .about-img img {
-    width: 300px;
-    border-radius: 5px;
+    width: 400px;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
 }
 
-.contact h2 {
-    margin-bottom: 20px;
+/* Contact */
+.contact {
+    max-width: 600px;
+    margin: 0 auto 60px auto;
 }
+
+    .contact h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
 
 form {
-    max-width: 500px;
+    display: flex;
+    flex-direction: column;
 }
 
 .name-fields {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 15px;
+    margin-bottom: 15px;
 }
 
+    .name-fields input {
+        flex: 1;
+    }
+
 input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    padding: 12px;
     border: 1px solid #ccc;
-    border-radius: 3px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+    height: 120px;
 }
 
 button[type="submit"] {
     background-color: #000;
     color: #fff;
-    padding: 10px;
-    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
     border: none;
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
 }
+
+    button[type="submit"]:hover {
+        background-color: #333;
+    }

@@ -1,30 +1,38 @@
 ﻿<!DOCTYPE html>
-<link rel="stylesheet" href="About.css" />
-<main>
-    <section class="about">
-        <div class="about-text">
-            <h1>About Me</h1>
-            <p>
-                Emanuel Ferreira (Torres Vedras, 2003) concluiu a licenciatura em Artes Visuais em 2022. Nesse mesmo ano, entrou no curso de Fotografia da ESTT, Instituto Politécnico de Tomar, do qual é finalista.
-                <br /><br />
-                As suas áreas de maior interesse na fotografia são moda e produto.
-            </p>
-        </div>
-        <div class="about-img">
-            <img src="~/teste.jpg"/>
-        </div>
-    </section>
-
-    <section class="contact">
-        <h2>Contact me</h2>
-        <form>
-            <div class="name-fields">
-                <input type="text" placeholder="Insira o primeiro nome" name="first-name" required />
-                <input type="text" placeholder="Insira o último nome" name="last-name" required />
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>About</title>
+    <link rel="stylesheet" href="~/css/About.css" />
+</head>
+<body>
+    <main>
+        <section class="about">
+            <div class="about-text">
+                <h1>About Me</h1>
+                <p>
+                    Emanuel Ferreira (Torres Vedras, 2003) concluiu a licenciatura em Artes Visuais em 2022. Nesse mesmo ano, entrou no curso de Fotografia da ESTT, Instituto Politécnico de Tomar, do qual é finalista.
+                    <br><br>
+                    As suas áreas de maior interesse na fotografia são moda e produto.
+                </p>
             </div>
-            <input type="email" placeholder="Insira o seu mail" name="email" required />
-            <textarea placeholder="Deixe aqui a sua mensgaem" name="message" required></textarea>
-            <button type="submit">Submit</button>
-        </form>
-    </section>
-</main>
+            <div class="about-img">
+                <img src="~/teste.jpg" alt="Retrato de Emanuel Ferreira">
+            </div>
+        </section>
+
+        <section class="contact">
+            <h2>Contact me</h2>
+            <form action="https://formspree.io/f/mvgrbkdy" method="POST">
+                <div class="name-fields">
+                    <input type="text" placeholder="Insira o primeiro nome" name="first-name" required>
+                    <input type="text" placeholder="Insira o último nome" name="last-name" required>
+                </div>
+                <input type="email" placeholder="Insira o seu mail" name="email" required>
+                <textarea placeholder="Deixe aqui a sua mensagem" name="message" required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
