@@ -16,7 +16,10 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Identity\Pages\index.cshtml.cs" />
+    <Compile Remove="Views\Home\Class.cs" />
+    <Compile Remove="Views\Home\Class1.cs" />
     <Compile Remove="Views\Home\Index1.cshtml.cs" />
+    <Compile Remove="Views\Home\Upload.cshtml.cs" />
   </ItemGroup>
 
   <ItemGroup>
