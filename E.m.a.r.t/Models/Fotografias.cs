@@ -10,6 +10,12 @@ namespace E.m.a.r.t.Models
         [Required(ErrorMessage = "O título é obrigatório.")]
         public string Titulo { get; set; }
 
+        // FK para coleção
+        public int? ColecaoFK { get; set; }
+
+        [ForeignKey(nameof(ColecaoFK))]
+        public Colecao? Colecao { get; set; }
+
         public string? Descricao { get; set; }
 
         [Display(Name = "Ficheiro da Imagem")]

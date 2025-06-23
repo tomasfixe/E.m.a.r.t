@@ -42,8 +42,8 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 
-//esta parte serve para aceitar virgulas ao colocar preço nas fotos
-var cultureInfo = new CultureInfo("pt-PT");
+
+var cultureInfo = new CultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 

@@ -1,8 +1,10 @@
-﻿@model IEnumerable<E.m.a.r.t.Models.Fotografias>
+﻿@model Tuple<IEnumerable<E.m.a.r.t.Models.Fotografias>, E.m.a.r.t.Models.Colecao>
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    ViewData["Title"] = "Upload de Fotografia";
+    var listaFotos = Model.Item1;
+    var novaColecao = Model.Item2;
     var novaFoto = ViewBag.NovaFoto as E.m.a.r.t.Models.Fotografias;
 }
 
@@ -23,6 +25,7 @@
     </div>
 }
 
+<!-- Formulário de upload de fotografia -->
 <form asp-action="Upload" method="post" class="mb-4">
     <div class="form-group">
         <label asp-for="@novaFoto.Titulo"></label>
@@ -54,17 +57,47 @@
         <span asp-validation-for="@novaFoto.Ficheiro" class="text-danger"></span>
     </div>
 
+    <!-- Dropdown de Coleções -->
+    <div class="form-group">
+        <label asp-for="@novaFoto.ColecaoFK">Coleção</label>
+        <select asp-for="@novaFoto.ColecaoFK" class="form-control"
+                asp-items="@(new SelectList(ViewBag.ListaColecoes, "Id", "Nome"))">
+            <option value="">-- Sem coleção --</option>
+        </select>
+        <span asp-validation-for="@novaFoto.ColecaoFK" class="text-danger"></span>
+    </div>
+
     <button type="submit" class="btn btn-success mt-2">Adicionar</button>
 </form>
 
 <hr />
+<!-- Formulário de criação de coleção -->
+<h2>Nova Coleção</h2>
 
+<form asp-action="CriarColecao" method="post" class="mb-4">
+    <div class="form-group">
+        <label asp-for="@novaColecao.Nome">Nome da Coleção</label>
+        <input asp-for="@novaColecao.Nome" class="form-control" />
+        <span asp-validation-for="@novaColecao.Nome" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="@novaColecao.Descricao">Descrição</label>
+        <textarea asp-for="@novaColecao.Descricao" class="form-control"></textarea>
+        <span asp-validation-for="@novaColecao.Descricao" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Criar Coleção</button>
+</form>
+
+<!-- Tabela de fotografias -->
 <h2>Lista de Fotografias</h2>
 
 <table class="table table-bordered">
     <thead>
         <tr>
             <th>Título</th>
+            <th>Coleção</th>
             <th>Descrição</th>
             <th>Data</th>
             <th>Preço</th>
@@ -73,27 +106,43 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var foto in Model)
-        {
-            <tr>
-                <td colspan="6">
-                    <form asp-action="Edit" method="post" class="d-flex gap-2 align-items-start">
-                        <input type="hidden" name="Id" value="@foto.Id" />
-                        <input type="text" name="Titulo" value="@foto.Titulo" class="form-control" />
-                        <input type="text" name="Descricao" value="@foto.Descricao" class="form-control" />
-                        <input type="date" name="Data" value="@foto.Data.ToString("yyyy-MM-dd")" class="form-control" />
-                        <input type="text" name="Preco" value="@foto.Preco.ToString("0.00")" class="form-control" />
-                        <input type="text" name="Ficheiro" value="@foto.Ficheiro" class="form-control" />
-                        <button type="submit" class="btn btn-warning btn-sm">Guardar</button>
-                    </form>
+        @foreach (var foto in Model.Item1)
+{
+    <tr>
+        <form asp-action="Edit" method="post" class="d-flex align-items-center">
+            <input type="hidden" name="Id" value="@foto.Id" />
+            <input type="hidden" name="Ficheiro" value="@foto.Ficheiro" />
 
-                    <form asp-action="Delete" method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@foto.Id" />
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Eliminar esta fotografia?');">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-        }
+            <td><input type="text" name="Titulo" value="@foto.Titulo" class="form-control" /></td>
+
+            <td>
+                    <select name="ColecaoFK" class="form-control"
+                            asp-items="@(new SelectList(ViewBag.ListaColecoes, "Id", "Nome", foto.ColecaoFK))">
+                        <option value="">-- Sem coleção --</option>
+                    </select>
+            </td>
+
+            <td><input type="text" name="Descricao" value="@foto.Descricao" class="form-control" /></td>
+            <td><input type="date" name="Data" value="@foto.Data.ToString("yyyy-MM-dd")" class="form-control" /></td>
+            <td><input type="text" name="Preco" value="@foto.Preco.ToString("0.00")" class="form-control" /></td>
+
+            <td>
+                @foto.Ficheiro
+            </td>
+
+            <td class="d-flex gap-1">
+                <button type="submit" class="btn btn-warning btn-sm">Guardar</button>
+            </td>
+        </form>
+
+        <td>
+            <form asp-action="Delete" method="post">
+                <input type="hidden" name="id" value="@foto.Id" />
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Eliminar esta fotografia?');">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+}
     </tbody>
 </table>
 
