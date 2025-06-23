@@ -25,6 +25,7 @@
     </div>
 }
 
+<!--Formulário para dar upload de fotos-->
 <form asp-action="Upload" method="post" enctype="multipart/form-data" class="mb-4">
     <div class="form-group">
         <label asp-for="@novaFoto.Titulo"></label>
@@ -51,9 +52,8 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="@novaFoto.Ficheiro"></label>
-        <input asp-for="@novaFoto.Ficheiro" type="file" class="form-control" name="ficheiroUpload" />
-        <span asp-validation-for="@novaFoto.Ficheiro" class="text-danger"></span>
+        <label for="imagem">Fotografia (ficheiro)</label>
+        <input type="file" name="imagem" accept="image/*" class="form-control" />
     </div>
 
     <div class="form-group">
@@ -70,7 +70,7 @@
 
 <hr />
 <h2>Nova Coleção</h2>
-
+<!--Formulário para criar coleções-->
 <form asp-action="CriarColecao" method="post" class="mb-4">
     <div class="form-group">
         <label asp-for="@novaColecao.Nome">Nome da Coleção</label>
@@ -88,7 +88,7 @@
 </form>
 
 <h2>Lista de Fotografias</h2>
-
+<!--Lista onde aparecem as fotografias criadas, onde é possivel editar parametros-->
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -123,7 +123,10 @@
                 <td><input type="text" name="Preco" value="@foto.Preco.ToString("0.00")" class="form-control" /></td>
 
                 <td>
-                    <img src="~/uploads/@foto.Ficheiro" alt="@foto.Titulo" style="max-width: 100px; max-height: 80px;" />
+						@if (!string.IsNullOrEmpty(foto.Ficheiro)) // Verifica se a foto tem um ficheiro associado
+						{
+                        <img src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" width="100" />
+                        }
                 </td>
 
                 <td class="d-flex gap-1">

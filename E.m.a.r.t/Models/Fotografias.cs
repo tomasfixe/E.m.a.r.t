@@ -19,8 +19,8 @@ namespace E.m.a.r.t.Models
         public string? Descricao { get; set; }
 
         [Display(Name = "Ficheiro da Imagem")]
-        [Required(ErrorMessage = "O ficheiro da imagem é obrigatório.")]
-        public string Ficheiro { get; set; }
+        
+        public string Ficheiro { get; set; } = string.Empty;
 
         [Display(Name = "Data da Foto")]
         [DataType(DataType.Date)]
