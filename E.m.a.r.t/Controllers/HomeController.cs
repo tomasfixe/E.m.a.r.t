@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using E.m.a.r.t.Data;
 using E.m.a.r.t.Models;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace E.m.a.r.t.Controllers
 {
@@ -20,19 +23,21 @@ namespace E.m.a.r.t.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            // Carrega todas as coleções com as fotografias incluídas
+            var colecoes = _context.Colecoes
+                .Include(c => c.Fotografias)
+                .ToList();
+
+            // Passa as coleções para a View
+            return View(colecoes);
         }
 
-        // GET: Página de upload 
         [HttpGet]
         public IActionResult Upload()
         {
-            // Lista de coleções
             ViewBag.ListaColecoes = _context.Colecoes.ToList();
 
-            // Lista de fotografias e nova coleção para o formulário
             ViewBag.NovaFoto = new Fotografias();
-            // var lista = _context.Fotografias.ToList();
 
             var lista = _context.Fotografias.Include(f => f.Colecao).ToList();
 
@@ -40,31 +45,48 @@ namespace E.m.a.r.t.Controllers
             return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
 
-        // POST: Upload de nova fotografia
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upload(Fotografias novaFoto)
+        public async Task<IActionResult> Upload(Fotografias novaFoto, IFormFile ficheiroUpload)
         {
             if (ModelState.IsValid)
             {
-                _context.Fotografias.Add(novaFoto);
-                _context.SaveChanges();
-                return RedirectToAction("Upload");
+                if (ficheiroUpload != null && ficheiroUpload.Length > 0)
+                {
+                    var fileName = Path.GetFileName(ficheiroUpload.FileName);
+
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ficheiroUpload.CopyToAsync(stream);
+                    }
+
+                    novaFoto.Ficheiro = fileName;
+
+                    _context.Fotografias.Add(novaFoto);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Upload");
+                }
+                else
+                {
+                    ModelState.AddModelError("Ficheiro", "É obrigatório escolher uma fotografia.");
+                }
             }
 
-            // Passar a lista de coleções para a ViewBag
             ViewBag.ListaColecoes = _context.Colecoes.ToList();
             ViewBag.NovaFoto = novaFoto;
 
             var lista = _context.Fotografias
-            .Include(f => f.Colecao)
-            .ToList();
+                .Include(f => f.Colecao)
+                .ToList();
 
             var novaColecao = new Colecao();
             return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
 
-        // POST: Eliminar fotografia
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
@@ -80,7 +102,6 @@ namespace E.m.a.r.t.Controllers
             return RedirectToAction("Upload");
         }
 
-        //POST: Editar fotografia
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int Id, string Titulo, string? Descricao, DateTime Data, decimal Preco, int? ColecaoFK, string Ficheiro)
@@ -94,7 +115,7 @@ namespace E.m.a.r.t.Controllers
                 foto.Data = Data;
                 foto.Preco = Preco;
                 foto.ColecaoFK = ColecaoFK;
-                // O ficheiro da foto não é alteravel
+                // O ficheiro não é alterado ao editar
 
                 _context.SaveChanges();
             }
@@ -102,7 +123,6 @@ namespace E.m.a.r.t.Controllers
             return RedirectToAction("Upload");
         }
 
-        // POST: Criar coleção
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CriarColecao(Colecao novaColecao)
@@ -114,13 +134,12 @@ namespace E.m.a.r.t.Controllers
                 return RedirectToAction("Upload");
             }
 
-            // Passar a lista de coleções para a ViewBag também no POST
             ViewBag.ListaColecoes = _context.Colecoes.ToList();
             ViewBag.NovaFoto = new Fotografias();
 
             var lista = _context.Fotografias
-            .Include(f => f.Colecao)
-            .ToList();
+                .Include(f => f.Colecao)
+                .ToList();
 
             return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
@@ -137,4 +156,3 @@ namespace E.m.a.r.t.Controllers
         }
     }
 }
-
