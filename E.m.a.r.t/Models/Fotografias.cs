@@ -10,7 +10,7 @@ namespace E.m.a.r.t.Models
         [Required(ErrorMessage = "O título é obrigatório.")]
         public string Titulo { get; set; }
 
-        // FK opcional para coleção
+        // FK para coleção
         public int? ColecaoFK { get; set; }
 
         [ForeignKey(nameof(ColecaoFK))]

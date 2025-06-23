@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using E.m.a.r.t.Data;
 using E.m.a.r.t.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace E.m.a.r.t.Controllers
 {
@@ -31,7 +32,10 @@ namespace E.m.a.r.t.Controllers
 
             // Lista de fotografias e nova coleção para o formulário
             ViewBag.NovaFoto = new Fotografias();
-            var lista = _context.Fotografias.ToList();
+            // var lista = _context.Fotografias.ToList();
+
+            var lista = _context.Fotografias.Include(f => f.Colecao).ToList();
+
             var novaColecao = new Colecao();
             return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
@@ -51,7 +55,11 @@ namespace E.m.a.r.t.Controllers
             // Passar a lista de coleções para a ViewBag
             ViewBag.ListaColecoes = _context.Colecoes.ToList();
             ViewBag.NovaFoto = novaFoto;
-            var lista = _context.Fotografias.ToList();
+
+            var lista = _context.Fotografias
+            .Include(f => f.Colecao)
+            .ToList();
+
             var novaColecao = new Colecao();
             return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
@@ -69,7 +77,29 @@ namespace E.m.a.r.t.Controllers
                 _context.SaveChanges();
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Upload");
+        }
+
+        //POST: Editar fotografia
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int Id, string Titulo, string? Descricao, DateTime Data, decimal Preco, int? ColecaoFK, string Ficheiro)
+        {
+            var foto = _context.Fotografias.FirstOrDefault(f => f.Id == Id);
+
+            if (foto != null)
+            {
+                foto.Titulo = Titulo;
+                foto.Descricao = Descricao;
+                foto.Data = Data;
+                foto.Preco = Preco;
+                foto.ColecaoFK = ColecaoFK;
+                // O ficheiro da foto não é alteravel
+
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Upload");
         }
 
         // POST: Criar coleção
@@ -87,7 +117,11 @@ namespace E.m.a.r.t.Controllers
             // Passar a lista de coleções para a ViewBag também no POST
             ViewBag.ListaColecoes = _context.Colecoes.ToList();
             ViewBag.NovaFoto = new Fotografias();
-            var lista = _context.Fotografias.ToList();
+
+            var lista = _context.Fotografias
+            .Include(f => f.Colecao)
+            .ToList();
+
             return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
 
