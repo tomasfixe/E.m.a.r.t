@@ -25,8 +25,7 @@
     </div>
 }
 
-<!-- Formulário de upload de fotografia -->
-<form asp-action="Upload" method="post" class="mb-4">
+<form asp-action="Upload" method="post" enctype="multipart/form-data" class="mb-4">
     <div class="form-group">
         <label asp-for="@novaFoto.Titulo"></label>
         <input asp-for="@novaFoto.Titulo" class="form-control" />
@@ -53,11 +52,10 @@
 
     <div class="form-group">
         <label asp-for="@novaFoto.Ficheiro"></label>
-        <input asp-for="@novaFoto.Ficheiro" class="form-control" />
+        <input asp-for="@novaFoto.Ficheiro" type="file" class="form-control" name="ficheiroUpload" />
         <span asp-validation-for="@novaFoto.Ficheiro" class="text-danger"></span>
     </div>
 
-    <!-- Dropdown de Coleções -->
     <div class="form-group">
         <label asp-for="@novaFoto.ColecaoFK">Coleção</label>
         <select asp-for="@novaFoto.ColecaoFK" class="form-control"
@@ -71,7 +69,6 @@
 </form>
 
 <hr />
-<!-- Formulário de criação de coleção -->
 <h2>Nova Coleção</h2>
 
 <form asp-action="CriarColecao" method="post" class="mb-4">
@@ -90,7 +87,6 @@
     <button type="submit" class="btn btn-primary">Criar Coleção</button>
 </form>
 
-<!-- Tabela de fotografias -->
 <h2>Lista de Fotografias</h2>
 
 <table class="table table-bordered">
@@ -101,48 +97,48 @@
             <th>Descrição</th>
             <th>Data</th>
             <th>Preço</th>
-            <th>Ficheiro</th>
+            <th>Imagem</th>
             <th>Ações</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var foto in Model.Item1)
-{
-    <tr>
-        <form asp-action="Edit" method="post" class="d-flex align-items-center">
-            <input type="hidden" name="Id" value="@foto.Id" />
-            <input type="hidden" name="Ficheiro" value="@foto.Ficheiro" />
+        {
+            <tr>
+                <form asp-action="Edit" method="post" class="d-flex align-items-center">
+                    <input type="hidden" name="Id" value="@foto.Id" />
+                    <input type="hidden" name="Ficheiro" value="@foto.Ficheiro" />
 
-            <td><input type="text" name="Titulo" value="@foto.Titulo" class="form-control" /></td>
+                <td><input type="text" name="Titulo" value="@foto.Titulo" class="form-control" /></td>
 
-            <td>
+                <td>
                     <select name="ColecaoFK" class="form-control"
                             asp-items="@(new SelectList(ViewBag.ListaColecoes, "Id", "Nome", foto.ColecaoFK))">
                         <option value="">-- Sem coleção --</option>
                     </select>
-            </td>
+                </td>
 
-            <td><input type="text" name="Descricao" value="@foto.Descricao" class="form-control" /></td>
-            <td><input type="date" name="Data" value="@foto.Data.ToString("yyyy-MM-dd")" class="form-control" /></td>
-            <td><input type="text" name="Preco" value="@foto.Preco.ToString("0.00")" class="form-control" /></td>
+                <td><input type="text" name="Descricao" value="@foto.Descricao" class="form-control" /></td>
+                <td><input type="date" name="Data" value="@foto.Data.ToString("yyyy-MM-dd")" class="form-control" /></td>
+                <td><input type="text" name="Preco" value="@foto.Preco.ToString("0.00")" class="form-control" /></td>
 
-            <td>
-                @foto.Ficheiro
-            </td>
+                <td>
+                    <img src="~/uploads/@foto.Ficheiro" alt="@foto.Titulo" style="max-width: 100px; max-height: 80px;" />
+                </td>
 
-            <td class="d-flex gap-1">
-                <button type="submit" class="btn btn-warning btn-sm">Guardar</button>
-            </td>
-        </form>
+                <td class="d-flex gap-1">
+                    <button type="submit" class="btn btn-warning btn-sm">Guardar</button>
+                </td>
+                </form>
 
-        <td>
-            <form asp-action="Delete" method="post">
-                <input type="hidden" name="id" value="@foto.Id" />
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Eliminar esta fotografia?');">Eliminar</button>
-            </form>
-        </td>
-    </tr>
-}
+                <td>
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" name="id" value="@foto.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Eliminar esta fotografia?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
