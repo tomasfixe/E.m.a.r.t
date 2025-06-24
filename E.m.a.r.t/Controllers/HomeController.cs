@@ -158,10 +158,35 @@ namespace E.m.a.r.t.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Loja()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var fotos = _context.Fotografias.ToList();
+
+            ViewBag.Relacionadas = fotos
+                .OrderByDescending(f => f.Data)
+                .Take(4)
+                .ToList();
+
+            return View(fotos);
+        }
+
+        public IActionResult Details(int id)
+        {
+            var foto = _context.Fotografias.FirstOrDefault(f => f.Id == id);
+            if (foto == null)
+            {
+                return NotFound();
+            }
+
+            // carregar outras fotos da mesma coleção (ou aleatórias se ColecaoFK for null)
+            var relacionadas = _context.Fotografias
+                .Where(f => f.ColecaoFK == foto.ColecaoFK && f.Id != id)
+                .Take(6)
+                .ToList();
+
+            ViewBag.Relacionadas = relacionadas;
+
+            return View(foto);
         }
     }
 }
