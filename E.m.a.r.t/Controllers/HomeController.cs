@@ -21,8 +21,8 @@ namespace E.m.a.r.t.Controllers
         public IActionResult Index()
         {
             var colecoes = _context.Colecoes
-            .Include(c => c.ListaFotografias)
-            .ToList();
+                .Include(c => c.ListaFotografias)
+                .ToList();
 
             return View(colecoes);
         }
@@ -66,7 +66,6 @@ namespace E.m.a.r.t.Controllers
                         imagem.CopyTo(stream);
                     }
 
-                    
                     novaFoto.Ficheiro = nomeFicheiro;
                 }
 
@@ -151,8 +150,8 @@ namespace E.m.a.r.t.Controllers
             ViewBag.NovaFoto = new Fotografias();
 
             var lista = _context.Fotografias
-            .Include(f => f.Colecao)
-            .ToList();
+                .Include(f => f.Colecao)
+                .ToList();
 
             return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
@@ -164,14 +163,21 @@ namespace E.m.a.r.t.Controllers
 
         public IActionResult Loja()
         {
-            var fotos = _context.Fotografias.ToList();
-
-            ViewBag.Relacionadas = fotos
-                .OrderByDescending(f => f.Data)
-                .Take(4)
+            var colecoes = _context.Colecoes
+                .Include(c => c.ListaFotografias)
                 .ToList();
 
-            return View(fotos);
+            var fotosSemColecao = _context.Fotografias
+                .Where(f => f.ColecaoFK == null)
+                .ToList();
+
+            var vm = new LojaViewModel
+            {
+                Colecoes = colecoes,
+                FotografiasSemColecao = fotosSemColecao
+            };
+
+            return View(vm);
         }
 
         public IActionResult Details(int id)
