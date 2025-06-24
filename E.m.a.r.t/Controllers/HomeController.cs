@@ -156,6 +156,52 @@ namespace E.m.a.r.t.Controllers
             return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
 
+        // POST: Editar coleção
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditarColecao(int Id, string Nome, string? Descricao)
+        {
+            // procura a coleção com o ID fornecido
+            var colecao = _context.Colecoes.FirstOrDefault(c => c.Id == Id);
+
+            if (colecao != null)
+            {
+                // atualiza os dados da coleção
+                colecao.Nome = Nome;
+                colecao.Descricao = Descricao;
+
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Upload");
+        }
+
+        // POST: Eliminar coleção
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EliminarColecao(int id)
+        {
+            
+            var colecao = _context.Colecoes
+                .Include(c => c.ListaFotografias)
+                .FirstOrDefault(c => c.Id == id);
+
+            if (colecao != null)
+            {
+                // Colecar as fotos da coleção "Sem coleção"
+                foreach (var foto in colecao.ListaFotografias)
+                {
+                    foto.ColecaoFK = null;
+                }
+
+                // Eliminar a coleção
+                _context.Colecoes.Remove(colecao);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Upload");
+        }
+
         public IActionResult Privacy()
         {
             return View();

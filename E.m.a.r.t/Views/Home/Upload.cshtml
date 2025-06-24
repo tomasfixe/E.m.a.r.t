@@ -87,6 +87,48 @@
     <button type="submit" class="btn btn-primary">Criar Coleção</button>
 </form>
 
+<hr />
+<h2>Lista de Coleções</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var colecao in ViewBag.ListaColecoes as List<E.m.a.r.t.Models.Colecao>)
+        {
+            <tr>
+                <!-- Formulário de edição -->
+                <form asp-action="EditarColecao" method="post" class="d-flex align-items-center">
+                    <input type="hidden" name="Id" value="@colecao.Id" />
+
+                <td>
+                    <input type="text" name="Nome" value="@colecao.Nome" class="form-control" />
+                </td>
+                <td>
+                    <input type="text" name="Descricao" value="@colecao.Descricao" class="form-control" />
+                </td>
+                <td class="d-flex gap-1">
+                    <button type="submit" class="btn btn-warning btn-sm">Guardar</button>
+                </td>
+                </form>
+
+                <!-- Botão de eliminar -->
+                <td>
+                    <form asp-action="EliminarColecao" method="post" class="d-inline" onsubmit="return confirm('Eliminar esta coleção? As fotografias associadas ficarão sem coleção.')">
+                        <input type="hidden" name="id" value="@colecao.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 <h2>Lista de Fotografias</h2>
 <!--Lista onde aparecem as fotografias criadas, onde é possivel editar parametros-->
 <table class="table table-bordered">
