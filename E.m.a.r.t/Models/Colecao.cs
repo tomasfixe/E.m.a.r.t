@@ -12,7 +12,7 @@ namespace E.m.a.r.t.Models
 
         public string? Descricao { get; set; }
 
-        // Lista de fotografias nesta coleção 
-        public ICollection<Fotografias>? Fotografias { get; set; }
+        // Lista de fotografias nesta coleção 1-N
+        public ICollection<Fotografias> ListaFotografias { get; set; } = new List<Fotografias>();
     }
 }

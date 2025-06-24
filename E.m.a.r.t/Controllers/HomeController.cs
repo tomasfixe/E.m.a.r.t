@@ -20,7 +20,11 @@ namespace E.m.a.r.t.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            var colecoes = _context.Colecoes
+            .Include(c => c.ListaFotografias)
+            .ToList();
+
+            return View(colecoes);
         }
 
         // GET: Página de upload 
