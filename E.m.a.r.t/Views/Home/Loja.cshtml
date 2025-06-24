@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="~/css/Loja.css" />
 
 <div class="product-page container">
-    <h1 class="mb-4">Loja de Fotografias</h1>
 
     <!-- Coleções -->
     @foreach (var colecao in Model.Colecoes)
@@ -19,8 +18,8 @@
                         <img src="~/imagens/@foto.Ficheiro" class="card-img-top" alt="@foto.Titulo" />
                         <div class="card-body">
                             <h5 class="card-title">@foto.Titulo</h5>
-                            <p class="card-text text-muted">@foto.Data.ToShortDateString()</p>
-                            <p class="card-text fw-bold">@foto.Preco.ToString("C")</p>
+                            <p class="card-text text-muted">@foto.Data.ToString("dd/MM/yyyy")</p>
+                            <p class="card-text fw-bold">@foto.Preco.ToString("C", new System.Globalization.CultureInfo("pt-PT"))</p>
                             <p class="card-text">@foto.Descricao</p>
 
                             <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
@@ -46,8 +45,8 @@
                         <img src="~/imagens/@foto.Ficheiro" class="card-img-top" alt="@foto.Titulo" />
                         <div class="card-body">
                             <h5 class="card-title">@foto.Titulo</h5>
-                            <p class="card-text text-muted">@foto.Data.ToShortDateString()</p>
-                            <p class="card-text fw-bold">@foto.Preco.ToString("C")</p>
+                            <p class="card-text text-muted">@foto.Data.ToString("dd/MM/yyyy")</p>
+                            <p class="card-text fw-bold">@foto.Preco.ToString("C", new System.Globalization.CultureInfo("pt-PT"))</p>
                             <p class="card-text">@foto.Descricao</p>
 
                             <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
@@ -72,7 +71,7 @@
                     <a asp-action="Details" asp-route-id="@foto.Id">
                         <img src="~/imagens/@foto.Ficheiro" class="card-img-top" alt="@foto.Titulo" />
                         <h4>@foto.Titulo</h4>
-                        <p>@foto.Preco.ToString("C")</p>
+                        <p>@foto.Preco.ToString("C", new System.Globalization.CultureInfo("pt-PT"))</p>
                     </a>
                 </div>
             }

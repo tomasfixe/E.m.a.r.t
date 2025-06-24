@@ -24,8 +24,21 @@
                 </p>
             </div>
             <div class="about-img">
-                <img src="~/teste.jpg" alt="Retrato de Emanuel Ferreira">
+                <img src="~/lib/_H9A6552.jpg" alt="Retrato de Emanuel Ferreira">
             </div>
+        </section>
+
+        <section class="contact">
+            <h2>Envia a tua mensagem!</h2>
+            <form action="https://formspree.io/f/mvgrbkdy" method="POST">
+                <div class="name-fields">
+                    <input type="text" placeholder="Insira o primeiro nome" name="first-name" required>
+                    <input type="text" placeholder="Insira o último nome" name="last-name" required>
+                </div>
+                <input type="email" placeholder="Insira o seu mail" name="email" required>
+                <textarea placeholder="Deixe aqui a sua mensagem" name="message" required></textarea>
+                <button type="submit">Submit</button>
+            </form>
         </section>
 
         <section class="site-info">
@@ -52,19 +65,6 @@
             </ul>
 
             <p><em>Nota:</em> Todos os pacotes foram obtidos via <strong>NuGet</strong> ou diretamente a partir dos websites oficiais.</p>
-        </section>
-
-        <section class="contact">
-            <h2>Envia a tua mensagem!</h2>
-            <form action="https://formspree.io/f/mvgrbkdy" method="POST">
-                <div class="name-fields">
-                    <input type="text" placeholder="Insira o primeiro nome" name="first-name" required>
-                    <input type="text" placeholder="Insira o último nome" name="last-name" required>
-                </div>
-                <input type="email" placeholder="Insira o seu mail" name="email" required>
-                <textarea placeholder="Deixe aqui a sua mensagem" name="message" required></textarea>
-                <button type="submit">Submit</button>
-            </form>
         </section>
     </main>
 </body>
