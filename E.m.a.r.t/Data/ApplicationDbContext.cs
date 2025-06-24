@@ -14,5 +14,8 @@ namespace E.m.a.r.t.Data
         
         public DbSet<Fotografias> Fotografias { get; set; }
         public DbSet<Colecao> Colecoes { get; set; }
+        public DbSet<Utilizadores> Utilizadores { get; set; }
+        public DbSet<Compras> Compras { get; set; }
+
     }
 }
