@@ -2,6 +2,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
+    Layout = "_Layout";
     ViewData["Title"] = "Página Inicial";
 }
 
@@ -13,12 +14,9 @@
 <main class="grid">
     @foreach (var colecao in Model)
     {
-        <!-- Mostra as primeiras 3 fotos -->
         var fotos = colecao.ListaFotografias.Take(3).ToList();
 
-        <!-- Ignora coleções sem fotos -->
         if (fotos.Count == 0) continue;
-        
 
         <div class="card">
             <div class="swiper card-swiper">
@@ -36,11 +34,12 @@
             <div class="card-content">
                 <h2>@colecao.Nome</h2>
                 <p>@colecao.Descricao</p>
-                <a href="#" class="btn">Ver</a>
+                <a href="@Url.Action("Loja", "Home")" class="btn">Ver</a>
             </div>
         </div>
     }
 </main>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

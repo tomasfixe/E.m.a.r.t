@@ -1,0 +1,56 @@
+﻿@model CarrinhoViewModel
+
+@{
+    ViewData["Title"] = "Carrinho de Compras";
+}
+
+<link rel="stylesheet" href="~/css/Checkout.css" />
+
+<h1>Carrinho de Compras</h1>
+
+<form method="post" asp-action="FinalizarCompra">
+    <h2>Os seus dados</h2>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <label>Nome Completo</label>
+            <input class="form-control" name="Nome" value="@Model.Nome" required />
+        </div>
+        <div class="col-md-6">
+            <label>NIF</label>
+            <input class="form-control" name="NIF" value="@Model.NIF" required />
+        </div>
+        <div class="col-md-12">
+            <label>Morada</label>
+            <input class="form-control" name="Morada" value="@Model.Morada" required />
+        </div>
+    </div>
+
+    <h2>Fotografias no Carrinho</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Imagem</th>
+                <th>Título</th>
+                <th>Preço</th>
+                <th>Remover</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var foto in Model.Fotografias)
+            {
+                <tr>
+                    <td><img src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" width="100" /></td>
+                    <td>@foto.Titulo</td>
+                    <td>@foto.Preco.ToString("C")</td>
+                    <td>
+                        <button type="submit" name="removerId" value="@foto.Id" class="btn btn-danger btn-sm">X</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Total: @Model.Fotografias.Sum(f => f.Preco).ToString("C")</h3>
+
+    <button type="submit" class="btn btn-success">Finalizar Compra</button>
+</form>

@@ -16,7 +16,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-
 // Configuração do Identity com roles
 builder.Services
     .AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -29,16 +28,24 @@ builder.Services
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
-// Email Sender
+// Ativar sessões
+builder.Services.AddSession(); 
+
+// Serviço de envio de emails (ex: SendGrid)
 builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
+
+// Configurar redirecionamento para login caso não autenticado
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login"; // Caminho padrão do Identity
+});
 
 var app = builder.Build();
 
-
+// Ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -54,23 +61,25 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); 
+// Middleware de sessão
+app.UseSession(); 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-
+// Definir rota padrão
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
-
+// Cultura (moeda, datas, etc.)
 var cultureInfo = new CultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-
-// Seed dos dados iniciais admin, roles
-
+// Seed dos dados iniciais (roles, admin, etc.)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
