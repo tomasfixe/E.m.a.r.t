@@ -59,3 +59,24 @@
     object-fit: cover;
     border-radius: 8px;
 }
+
+/* Normal */
+.btn-primary {
+    background-color: #265C4B;
+    border-color: #146551;
+    color: #fff;
+}
+
+    /* Hover */
+    .btn-primary:hover {
+        background-color: #146551;
+        border-color: #265C4B;
+    }
+
+/* Dark mode */
+body.dark-mode .btn-primary {
+    background-color: #146551 !important;
+    border-color: #265C4B !important;
+    color: #fff !important;
+}
+

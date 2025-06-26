@@ -58,14 +58,21 @@ nav a {
 }
 
 .btn {
-    display: inline-block;
-    background-color: #000;
+    background-color: #265C4B; /* fundo escuro */
     color: #fff;
+    border: 2px solid #146551; /* borda azul clara */
     padding: 0.5rem 1rem;
-    text-decoration: none;
     border-radius: 4px;
     font-weight: bold;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+    .btn:hover,
+    .btn:focus {
+        background-color: #146551; /* fundo azul claro no hover */
+        border-color: #265C4B; /* borda azul escura no hover */
+        color: #fff;
+    }
 
 /* Swiper dentro de .card */
 .card-swiper {

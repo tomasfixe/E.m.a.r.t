@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/E.m.a.r.t.styles.css" asp-append-version="true" />
+
+    @RenderSection("Estilos", required: false)
 </head>
 <body>
     <header>
@@ -34,7 +36,13 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="Checkout">Checkout</a>
-
+                        </li>
+                        <li class="nav-item d-flex align-items-center ms-3">
+                            <label class="switch mb-0 d-flex align-items-center" style="gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="themeToggle" />
+                                <span class="slider"></span>
+                                <span id="themeEmoji" style="font-size: 18px;">🌙</span>
+                            </label>
                         </li>
                     </ul>
 
@@ -60,5 +68,30 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        const toggleSwitch = document.getElementById('themeToggle');
+        const themeEmoji = document.getElementById('themeEmoji');
+        const body = document.body;
+
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            toggleSwitch.checked = true;
+            themeEmoji.textContent = '☀️';
+        } else {
+            themeEmoji.textContent = '🌙';
+        }
+
+        toggleSwitch.addEventListener('change', () => {
+            if (toggleSwitch.checked) {
+                body.classList.add('dark-mode');
+                themeEmoji.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                themeEmoji.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
 </body>
 </html>
