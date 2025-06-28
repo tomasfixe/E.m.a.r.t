@@ -1,5 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Página Inicial";
+    @using Microsoft.AspNetCore.Identity
+    @inject UserManager<IdentityUser> UserManager
+    @inject SignInManager<IdentityUser> SignInManager
 }
 <!DOCTYPE html>
 <html lang="pt">
@@ -31,9 +34,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Sobre</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Upload">Upload</a>
-                        </li>
+                        
+                        @if (SignInManager.IsSignedIn(User)) //Só aparece o upload se for admin
+                        {
+                            var user = await UserManager.GetUserAsync(User);
+                            var roles = await UserManager.GetRolesAsync(user);
+
+                            if (roles.Contains("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Home" asp-action="Upload">Upload</a>
+                                </li>
+                            }
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="Checkout">Checkout</a>
                         </li>

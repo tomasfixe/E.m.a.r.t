@@ -4,7 +4,7 @@ using E.m.a.r.t.Data;
 using E.m.a.r.t.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization;  // para [Authorize]
+using Microsoft.AspNetCore.Authorization;  
 
 namespace E.m.a.r.t.Controllers
 {
@@ -24,13 +24,25 @@ namespace E.m.a.r.t.Controllers
         [Authorize]  // Só permite acesso a utilizadores autenticados
         public IActionResult Checkout()
         {
+            var utilizador = _context.Utilizadores.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            var fotosCarrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
+
             var model = new CarrinhoViewModel
             {
                 Nome = User.Identity?.Name ?? "Utilizador",
-                Morada = "Morada pré-preenchida",
-                NIF = "123456789",
-                Fotografias = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>()
+                NIF = utilizador?.NIF ?? "",
+                Fotografias = fotosCarrinho
             };
+
+            if (utilizador != null)
+            {
+                var compras = _context.Compras
+                    .Include(c => c.ListaFotografiasCompradas)
+                    .Where(c => c.CompradorFK == utilizador.Id)
+                    .ToList();
+
+                ViewBag.Compras = compras;
+            }
 
             return View(model);
         }
@@ -55,16 +67,52 @@ namespace E.m.a.r.t.Controllers
                 {
                     Nome = model.Nome,
                     NIF = model.NIF,
-                    Morada = model.Morada,
                     Fotografias = carrinho
                 });
             }
 
-            // Aqui podes guardar o pedido na base de dados, enviar email, etc.
+            // Obter o utilizador da base de dados pelo User.Identity.Name
+            var utilizador = _context.Utilizadores.FirstOrDefault(u => u.UserName == User.Identity.Name);
 
-            HttpContext.Session.Remove("Carrinho"); // Limpa carrinho após finalização
+            if (utilizador != null && carrinho.Any())
+            {
+                var novaCompra = new Compras
+                {
+                    CompradorFK = utilizador.Id,
+                    Data = DateTime.Now,
+                    Estado = Estados.Pago, 
+                    ListaFotografiasCompradas = new List<Fotografias>()
+                };
 
-            return RedirectToAction("Confirmacao");
+                foreach (var foto in carrinho)
+                {
+                    var fotoDb = _context.Fotografias.Find(foto.Id);
+                    if (fotoDb != null)
+                    {
+                        novaCompra.ListaFotografiasCompradas.Add(fotoDb);
+                    }
+                }
+
+                _context.Compras.Add(novaCompra);
+                _context.SaveChanges();
+            }
+
+            HttpContext.Session.Remove("Carrinho");
+
+            // Carrega novamente as compras do utilizador
+            var comprasAtualizadas = _context.Compras
+                .Include(c => c.ListaFotografiasCompradas)
+                .Where(c => c.CompradorFK == utilizador.Id)
+                .ToList();
+
+            ViewBag.Compras = comprasAtualizadas;
+
+            return View("Checkout", new CarrinhoViewModel
+            {
+                Nome = model.Nome,
+                NIF = model.NIF,
+                Fotografias = new List<Fotografias>() // carrinho está agora vazio
+            });
         }
 
         [HttpPost]
@@ -97,7 +145,7 @@ namespace E.m.a.r.t.Controllers
             var colecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList();
             return View(colecoes);
         }
-
+        [Authorize(Roles = "Admin")] //Só utilizadores com a role Admin podem aceder
         [HttpGet]
         public IActionResult Upload()
         {
@@ -109,7 +157,7 @@ namespace E.m.a.r.t.Controllers
 
             return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
-
+        [Authorize(Roles = "Admin")] 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upload(Fotografias novaFoto, IFormFile imagem)
@@ -143,6 +191,7 @@ namespace E.m.a.r.t.Controllers
             return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
@@ -162,6 +211,7 @@ namespace E.m.a.r.t.Controllers
             return RedirectToAction("Upload");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int Id, string Titulo, string? Descricao, DateTime Data, decimal Preco, int? ColecaoFK, string Ficheiro)
@@ -182,6 +232,7 @@ namespace E.m.a.r.t.Controllers
             return RedirectToAction("Upload");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CriarColecao(Colecao novaColecao)
@@ -200,6 +251,7 @@ namespace E.m.a.r.t.Controllers
             return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditarColecao(int Id, string Nome, string? Descricao)
@@ -216,6 +268,7 @@ namespace E.m.a.r.t.Controllers
             return RedirectToAction("Upload");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EliminarColecao(int id)

@@ -25,7 +25,7 @@ namespace E.m.a.r.t.Data
 
             // Cria um utilizador admin se ainda não existir
             var emailAdmin = "projeto.emart@gmail.com";
-            var adminPassword = "E.M.A.R.T.dweb";
+            var adminPassword = "admin123";
             var admin = await userManager.FindByEmailAsync(emailAdmin);
 
             if (admin == null)
@@ -34,13 +34,16 @@ namespace E.m.a.r.t.Data
                 {
                     UserName = emailAdmin,
                     Email = emailAdmin,
-                    EmailConfirmed = true
+                    // Tentar outra abordagem de corfirmação de email  EmailConfirmed = true
                 };
 
                 var result = await userManager.CreateAsync(admin, adminPassword);
                 //  Só se criar com sucesso é que atribuímos role e criamos entrada
                 if (result.Succeeded)
                 {
+                    // Marcar o email como confirmado e atribuir a role de Admin
+                    var token = await userManager.GenerateEmailConfirmationTokenAsync(admin);
+                    await userManager.ConfirmEmailAsync(admin, token);
                     await userManager.AddToRoleAsync(admin, "Admin");
 
                     dbContext.Utilizadores.Add(new Utilizadores

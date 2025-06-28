@@ -73,6 +73,9 @@ namespace E.m.a.r.t.Areas.Identity.Pages.Account
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        /// 
+
+        // Formulario do register
         public class InputModel
         {
             [Required]
@@ -84,7 +87,7 @@ namespace E.m.a.r.t.Areas.Identity.Pages.Account
             [StringLength(50)]
             [Display(Name = "Nome")]
             public string Nome { get; set; }
-
+            //Código do proferssor
             [Required]
             [StringLength(9)]
             [RegularExpression("[1-9][0-9]{8}", ErrorMessage = "Deve escrever apenas 9 dígitos no NIF")]
@@ -142,7 +145,10 @@ namespace E.m.a.r.t.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("Utilizador criado com sucesso.");
+
+                    // Atribuir o role de "User"
+                    await _userManager.AddToRoleAsync(user, "User");
 
                     //Adiciona à tabela utilizadores
                     _context.Utilizadores.Add(new Models.Utilizadores

@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-md-4">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
+            <h2>Crie uma nova conta.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
@@ -35,12 +35,6 @@
                 <input asp-for="Input.Morada" class="form-control" placeholder="Morada" />
                 <label asp-for="Input.Morada">Morada</label>
                 <span asp-validation-for="Input.Morada" class="text-danger"></span>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.CodPostal" class="form-control" placeholder="1234-567 Localidade" />
-                <label asp-for="Input.CodPostal">Código Postal</label>
-                <span asp-validation-for="Input.CodPostal" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
@@ -72,29 +66,8 @@
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
-            <h3>Usar outro serviço para registo</h3>
+            <h3>Irá receber um email para confirmar a conta</h3>
             <hr />
-            @if ((Model.ExternalLogins?.Count ?? 0) == 0)
-            {
-                <div>
-                    <p>
-                        Não existem serviços externos configurados. Consulta este <a href="https://go.microsoft.com/fwlink/?LinkID=532715">artigo sobre configuração</a>.
-                    </p>
-                </div>
-            }
-            else
-            {
-                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                    <div>
-                        <p>
-                            @foreach (var provider in Model.ExternalLogins!)
-                            {
-                                <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Entrar com @provider.DisplayName">@provider.DisplayName</button>
-                            }
-                        </p>
-                    </div>
-                </form>
-            }
         </section>
     </div>
 </div>

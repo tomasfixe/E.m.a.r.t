@@ -13,16 +13,8 @@
     <h2>Os seus dados</h2>
     <div class="row mb-4">
         <div class="col-md-6">
-            <label>Nome Completo</label>
+            <label>Email</label>
             <input class="form-control" name="Nome" value="@Model.Nome" required />
-        </div>
-        <div class="col-md-6">
-            <label>NIF</label>
-            <input class="form-control" name="NIF" value="@Model.NIF" required />
-        </div>
-        <div class="col-md-12">
-            <label>Morada</label>
-            <input class="form-control" name="Morada" value="@Model.Morada" required />
         </div>
     </div>
 
@@ -55,3 +47,45 @@
 
     <button type="submit" class="btn btn-success">Finalizar Compra</button>
 </form>
+
+<h2>Fotografias Compradas</h2>
+@{
+    var utilizador = Context.User.Identity?.Name;
+    var compras = ViewBag.Compras as List<Compras>;
+}
+
+@if (ViewBag.Compras != null && ViewBag.Compras.Count > 0)
+{
+    <h2>Fotografias Compradas</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Imagem</th>
+                <th>Data da Compra</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var compra in ViewBag.Compras)
+            {
+                foreach (var foto in compra.ListaFotografiasCompradas)
+                {
+                    <tr>
+                        <td>@foto.Titulo</td>
+                        <td>
+                            <img src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" width="120" />
+                        </td>
+                        <td>@compra.Data.ToShortDateString()</td>
+                        <td>@compra.Estado</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Não há fotografias compradas ainda.</p>
+}
