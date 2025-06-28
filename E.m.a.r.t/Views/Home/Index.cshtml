@@ -1,62 +1,66 @@
-﻿@model IEnumerable<E.m.a.r.t.Models.Colecao>
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@model IEnumerable<E.m.a.r.t.Models.Colecao> // O modelo é uma coleção de objetos 'Colecao'
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers // Permite usar os Tag Helpers do ASP.NET Core
 
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Página Inicial";
+    Layout = "_Layout"; // Define o layout base da página
+    ViewData["Title"] = "Página Inicial"; // Define o título da aba/navegador
 }
 
+<!-- Importa o CSS do Swiper (carrossel de imagens) e o CSS personalizado -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <link rel="stylesheet" href="~/css/Index.css" />
 
 <main class="grid">
-    @foreach (var colecao in Model)
+    @foreach (var colecao in Model) // Percorre cada coleção recebida no modelo
     {
-        var fotos = colecao.ListaFotografias.Take(3).ToList();
+        var fotos = colecao.ListaFotografias.Take(3).ToList(); // Seleciona até 3 fotografias da coleção
 
-        if (fotos.Count == 0) continue;
+        if (fotos.Count == 0) continue; // Se não houver fotos, passa para a próxima coleção
 
         <div class="card">
+            <!-- Carrossel de imagens Swiper -->
             <div class="swiper card-swiper">
                 <div class="swiper-wrapper">
-                    @foreach (var foto in fotos)
+                    @foreach (var foto in fotos) // Adiciona cada foto como um slide do carrossel
                     {
                         <div class="swiper-slide">
                             <img src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" />
                         </div>
                     }
                 </div>
-                <div class="swiper-pagination"></div>
+                <div class="swiper-pagination"></div> <!-- Elemento para os pontos de paginação -->
             </div>
 
+            <!-- Conteúdo textual do card -->
             <div class="card-content">
-                <h2>@colecao.Nome</h2>
-                <p>@colecao.Descricao</p>
-                <a href="@Url.Action("Loja", "Home")" class="btn">Ver</a>
+                <h2>@colecao.Nome</h2> <!-- Nome da coleção -->
+                <p>@colecao.Descricao</p> <!-- Descrição da coleção -->
+                <a href="@Url.Action("Loja", "Home")" class="btn">Ver</a> <!-- Link para ver mais -->
             </div>
         </div>
     }
 </main>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-
-    <!-- Swiper JS -->
+    <partial name="_ValidationScriptsPartial" /> <!-- Inclui scripts de validação, se forem necessários -->
+    <!-- Importa o JS do Swiper -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
+        // Inicializa todos os carrosseis Swiper quando a página carregar
         window.onload = function () {
             const swipers = document.querySelectorAll('.card-swiper');
             swipers.forEach(swiperEl => {
                 new Swiper(swiperEl, {
-                    loop: true,
+                    loop: true, // Permite rotação infinita das imagens
                     autoplay: {
-                        delay: 3000,
-                        disableOnInteraction: false
+                        delay: 3000, // Intervalo de 3 segundos
+                        disableOnInteraction: false // Não interrompe o autoplay ao clicar
                     },
                     pagination: {
                         el: swiperEl.querySelector('.swiper-pagination'),
-                        clickable: true
+                        clickable: true // Permite navegar entre slides pelos pontos
                     }
                 });
             });

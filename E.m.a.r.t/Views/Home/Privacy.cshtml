@@ -1,9 +1,9 @@
-﻿@model IEnumerable<E.m.a.r.t.Models.Fotografias>
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@model IEnumerable<E.m.a.r.t.Models.Fotografias> // Define o modelo da view, embora não esteja a ser usado neste ficheiro
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers // Permite o uso de Tag Helpers do ASP.NET MVC
 
 @{
-    Layout = "_Layout";
-    ViewData["Sobre"] = "Página Inicial";
+    Layout = "_Layout"; // Define que esta página usa o layout principal da aplicação
+    ViewData["Sobre"] = "Página Inicial"; // Define um valor opcional para o título da view
 }
 
 <!DOCTYPE html>
@@ -11,10 +11,12 @@
 <head>
     <meta charset="UTF-8">
     <title>About</title>
+    <!-- Link para o ficheiro CSS desta página -->
     <link rel="stylesheet" href="~/css/About.css" />
 </head>
 <body>
     <main>
+        <!-- Secção de apresentação pessoal -->
         <section class="about">
             <div class="about-text">
                 <h1>Sobre mim</h1>
@@ -24,13 +26,17 @@
                     As suas áreas de maior interesse na fotografia são moda e produto.
                 </p>
             </div>
+
+            <!-- Imagem de retrato -->
             <div class="about-img">
                 <img src="~/lib/_H9A6552.jpg" alt="Retrato de Emanuel Ferreira">
             </div>
         </section>
 
+        <!-- Secção de formulário de contacto -->
         <section class="contact">
             <h2>Envia a tua mensagem!</h2>
+            <!-- O formulário envia dados para o Formspree (serviço externo para submissão de formulários) -->
             <form action="https://formspree.io/f/mvgrbkdy" method="POST">
                 <div class="name-fields">
                     <input type="text" placeholder="Insira o primeiro nome" name="first-name" required>
@@ -38,10 +44,11 @@
                 </div>
                 <input type="email" placeholder="Insira o seu mail" name="email" required>
                 <textarea placeholder="Deixe aqui a sua mensagem" name="message" required></textarea>
-                <button type="submit">Submit</button>
+                <button type="submit">Submit</button> <!-- Botão de envio -->
             </form>
         </section>
 
+        <!-- Secção com informação sobre o projeto -->
         <section class="site-info">
             <h2>Sobre o site</h2>
             <p>
@@ -54,6 +61,7 @@
             </ul>
         </section>
 
+        <!-- Lista das tecnologias e bibliotecas utilizadas no projeto -->
         <section class="bibliotecas">
             <h2>Tecnologias e bibliotecas utilizadas</h2>
             <ul>

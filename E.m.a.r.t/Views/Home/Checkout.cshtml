@@ -1,18 +1,20 @@
-﻿@model CarrinhoViewModel
+﻿@model CarrinhoViewModel // Define o modelo usado na view — neste caso, CarrinhoViewModel contém dados como Nome e Fotografias.
 
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Carrinho de Compras";
+    Layout = "_Layout"; // Define o layout geral da página.
+    ViewData["Title"] = "Carrinho de Compras"; // Define o título da página.
 }
 
-<link rel="stylesheet" href="~/css/Checkout.css" />
+<link rel="stylesheet" href="~/css/Checkout.css" /> 
 
 <h1>Carrinho de Compras</h1>
 
+<!-- Formulário principal que envia um POST para a ação 'FinalizarCompra' -->
 <form method="post" asp-action="FinalizarCompra">
     <h2>Os seus dados</h2>
     <div class="row mb-4">
         <div class="col-md-6">
+            <!-- Campo de entrada para o nome/email do utilizador (vinculado ao Model) -->
             <label>Email</label>
             <input class="form-control" name="Nome" value="@Model.Nome" required />
         </div>
@@ -25,17 +27,18 @@
                 <th>Imagem</th>
                 <th>Título</th>
                 <th>Preço</th>
-                <th>Remover</th>
+                <th>Remover</th> <!-- Coluna para remover a fotografia do carrinho -->
             </tr>
         </thead>
         <tbody>
-            @foreach (var foto in Model.Fotografias)
+            @foreach (var foto in Model.Fotografias) // Percorre a lista de fotografias no carrinho
             {
                 <tr>
-                    <td><img src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" width="100" /></td>
-                    <td>@foto.Titulo</td>
-                    <td>@foto.Preco.ToString("C")</td>
+                    <td><img src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" width="100" /></td> <!-- Mostra a imagem -->
+                    <td>@foto.Titulo</td> <!-- Título da fotografia -->
+                    <td>@foto.Preco.ToString("C")</td> <!-- Preço formatado como moeda -->
                     <td>
+                        <!-- Botão para remover a fotografia. Envia o ID da foto ao controller. -->
                         <button type="submit" name="removerId" value="@foto.Id" class="btn btn-danger btn-sm">X</button>
                     </td>
                 </tr>
@@ -43,21 +46,23 @@
         </tbody>
     </table>
 
+    <!-- Mostra o total somando os preços das fotografias no carrinho -->
     <h3>Total: @Model.Fotografias.Sum(f => f.Preco).ToString("C")</h3>
 
+    <!-- Botão para submeter o formulário e finalizar a compra -->
     <button type="submit" class="btn btn-success">Finalizar Compra</button>
 </form>
 
 <h2>Fotografias Compradas</h2>
+
 @{
-    var utilizador = Context.User.Identity?.Name;
-    var compras = ViewBag.Compras as List<Compras>;
+    var utilizador = Context.User.Identity?.Name; // Obtém o nome do utilizador autenticado
+    var compras = ViewBag.Compras as List<Compras>; // Converte o ViewBag.Compras para uma lista fortemente tipada
 }
 
+<!-- Verifica se existem compras para exibir -->
 @if (ViewBag.Compras != null && ViewBag.Compras.Count > 0)
 {
-    <h2>Fotografias Compradas</h2>
-
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -68,17 +73,19 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Percorre todas as compras -->
             @foreach (var compra in ViewBag.Compras)
             {
+                // Percorre as fotografias compradas dentro de cada compra
                 foreach (var foto in compra.ListaFotografiasCompradas)
                 {
                     <tr>
-                        <td>@foto.Titulo</td>
+                        <td>@foto.Titulo</td> <!-- Título da foto comprada -->
                         <td>
                             <img src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" width="120" />
                         </td>
-                        <td>@compra.Data.ToShortDateString()</td>
-                        <td>@compra.Estado</td>
+                        <td>@compra.Data.ToShortDateString()</td> <!-- Data da compra -->
+                        <td>@compra.Estado</td> <!-- Estado da compra (ex: Pago, Pendente, etc.) -->
                     </tr>
                 }
             }
@@ -87,5 +94,5 @@
 }
 else
 {
-    <p>Não há fotografias compradas ainda.</p>
+    <p>Não há fotografias compradas ainda.</p> <!-- Mensagem caso o utilizador não tenha compras -->
 }

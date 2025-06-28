@@ -1,13 +1,16 @@
+/* Define tamanho base da fonte no HTML */
 html {
     font-size: 14px;
 }
 
+/* Aumenta o tamanho da fonte em telas maiores */
 @media (min-width: 768px) {
     html {
         font-size: 16px;
     }
 }
 
+/* Estilos para foco em botões, links, inputs e checkboxes */
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
@@ -16,16 +19,18 @@ html {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #265C4B;
 }
 
+/* HTML ocupa a altura mínima da viewport */
 html {
     position: relative;
     min-height: 100%;
 }
 
+/* Espaço inferior para o body (ex: footer fixo) */
 body {
     margin-bottom: 60px;
 }
 
-/* Botões padrão */
+/* Estilo base dos botões */
 .btn {
     background-color: #265C4B;
     color: #fff;
@@ -36,6 +41,7 @@ body {
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+    /* Botões hover e foco */
     .btn:hover,
     .btn:focus {
         background-color: #146551;
@@ -43,54 +49,57 @@ body {
         color: #fff;
     }
 
-/* Botão primário */
+/* Estilo específico do botão primário */
 .btn-primary {
     background-color: #265C4B;
     border-color: #146551;
     color: #fff;
 }
 
+    /* Hover do botão primário */
     .btn-primary:hover {
         background-color: #146551;
         border-color: #265C4B;
         color: #fff;
     }
 
-/* Dark Mode Base */
+/* Estilos base para o modo escuro */
 body.dark-mode {
     background-color: #1e1e1e;
     color: #f5f5f5;
 }
 
+    /* Links no modo escuro */
     body.dark-mode a {
         color: #cfcfcf;
     }
 
-    /* Navbar */
+    /* Navbar no modo escuro */
     body.dark-mode .navbar {
         background-color: #2c2c2c !important;
         border-bottom: 1px solid #444;
     }
 
+    /* Navbar texto no modo escuro */
     body.dark-mode .navbar-brand,
     body.dark-mode .nav-link {
         color: #f0f0f0 !important;
     }
 
-    /* Footer */
+    /* Footer no modo escuro */
     body.dark-mode .custom-footer {
         background-color: #2c2c2c;
         color: #ddd;
     }
 
-    /* Cards */
+    /* Cartões no modo escuro */
     body.dark-mode .card {
         background-color: #2a2a2a;
         color: #fff;
         border-color: #444;
     }
 
-    /* Botões no dark mode */
+    /* Botões no modo escuro */
     body.dark-mode .btn,
     body.dark-mode .btn-primary {
         background-color: #146551 !important;
@@ -98,6 +107,7 @@ body.dark-mode {
         border: 2px solid #265C4B !important;
     }
 
+        /* Botões hover e foco no modo escuro */
         body.dark-mode .btn:hover,
         body.dark-mode .btn:focus,
         body.dark-mode .btn-primary:hover,
@@ -107,7 +117,7 @@ body.dark-mode {
             color: #fff !important;
         }
 
-/* Switch */
+/* Container do switch (toggle) */
 .switch {
     position: relative;
     display: inline-block;
@@ -115,12 +125,14 @@ body.dark-mode {
     height: 24px;
 }
 
+    /* Esconde o input original do switch */
     .switch input {
         opacity: 0;
         width: 0;
         height: 0;
     }
 
+/* Estilo do slider do switch */
 .slider {
     position: absolute;
     cursor: pointer;
@@ -133,6 +145,7 @@ body.dark-mode {
     border-radius: 24px;
 }
 
+    /* Bola do slider */
     .slider:before {
         position: absolute;
         content: "";
@@ -145,10 +158,12 @@ body.dark-mode {
         border-radius: 50%;
     }
 
+/* Cor do slider quando ativo */
 input:checked + .slider {
     background-color: #146551;
 }
 
+    /* Movimento da bola do slider quando ativo */
     input:checked + .slider:before {
         transform: translateX(26px);
     }
