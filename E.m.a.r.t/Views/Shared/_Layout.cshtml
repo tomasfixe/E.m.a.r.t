@@ -1,7 +1,14 @@
 ﻿@{
+    // Define o título da página para "Página Inicial"
     ViewData["Title"] = "Página Inicial";
+
+    // Importa o namespace para uso do Identity do ASP.NET Core
     @using Microsoft.AspNetCore.Identity
+
+    
     @inject UserManager<IdentityUser> UserManager
+
+    
     @inject SignInManager<IdentityUser> SignInManager
 }
 <!DOCTYPE html>
@@ -9,56 +16,79 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Define o título da página dinâmico usando ViewData -->
     <title>@ViewData["Title"] - E.m.a.r.t</title>
+
+    <!-- Inclui CSS do Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Inclui o CSS do site com controle de versão para cache -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- Inclui CSS customizado específico da aplicação -->
     <link rel="stylesheet" href="~/E.m.a.r.t.styles.css" asp-append-version="true" />
 
+    <!-- Permite a inserção opcional de seções de estilos adicionais nas views filhas -->
     @RenderSection("Estilos", required: false)
 </head>
 <body>
     <header>
+        <!-- Navbar responsiva usando Bootstrap -->
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
+                <!-- Logo / Nome do site que redireciona para a página inicial -->
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">E.m.a.r.t</a>
+
+                <!-- Botão para toggle (colapso) da navbar em telas pequenas -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+                <!-- Conteúdo da navbar que será colapsado em telas pequenas -->
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        <!-- Link para página Loja -->
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Loja">Loja</a>
                         </li>
+
+                        <!-- Link para página Sobre (Privacy) -->
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Sobre</a>
                         </li>
-                        
-                        @if (SignInManager.IsSignedIn(User)) //Só aparece o upload se for admin
-                        {
-                            var user = await UserManager.GetUserAsync(User);
-                            var roles = await UserManager.GetRolesAsync(user);
 
-                            if (roles.Contains("Admin"))
+                        <!-- Se o usuário estiver autenticado, verifica se é Admin para mostrar link de Upload -->
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            var user = await UserManager.GetUserAsync(User); // Busca dados do usuário logado
+                            var roles = await UserManager.GetRolesAsync(user); // Busca roles do usuário
+
+                            if (roles.Contains("Admin")) // Se o usuário for Admin
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Home" asp-action="Upload">Upload</a>
                                 </li>
                             }
                         }
+
+                        <!-- Link para página Checkout -->
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="Checkout">Checkout</a>
                         </li>
+
+                        <!-- Controle de tema claro/escuro com um switch -->
                         <li class="nav-item d-flex align-items-center ms-3">
                             <label class="switch mb-0 d-flex align-items-center" style="gap: 8px; cursor: pointer;">
                                 <input type="checkbox" id="themeToggle" />
                                 <span class="slider"></span>
-                                <span id="themeEmoji" style="font-size: 18px;">🌙</span>
+                                <span id="themeEmoji" style="font-size: 18px;">🌙</span> <!-- Ícone de lua para tema escuro -->
                             </label>
                         </li>
                     </ul>
 
+                    <!-- Partial view para login/logout -->
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -67,42 +97,56 @@
 
     <div class="container">
         <main role="main" class="pb-3">
+            <!-- Renderiza o conteúdo específico da página atual -->
             @RenderBody()
         </main>
     </div>
 
     <footer class="custom-footer">
         <div class="container">
+            <!-- Rodapé com ano e link para política de privacidade -->
             &copy; 2025 - E.m.a.r.t - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 
+    <!-- Scripts JavaScript necessários -->
+    <!-- jQuery -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap JS bundle -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script customizado do site -->
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Seção opcional para scripts adicionais -->
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Script para alternar tema claro/escuro -->
     <script>
         const toggleSwitch = document.getElementById('themeToggle');
         const themeEmoji = document.getElementById('themeEmoji');
         const body = document.body;
 
+        // Verifica o tema salvo no localStorage e aplica no carregamento da página
         if (localStorage.getItem('theme') === 'dark') {
-            body.classList.add('dark-mode');
-            toggleSwitch.checked = true;
-            themeEmoji.textContent = '☀️';
+            body.classList.add('dark-mode'); // Aplica classe para tema escuro
+            toggleSwitch.checked = true; // Marca checkbox como ativo
+            themeEmoji.textContent = '☀️'; // Muda emoji para sol (tema claro disponível)
         } else {
-            themeEmoji.textContent = '🌙';
+            themeEmoji.textContent = '🌙'; // Emoji lua para tema claro
         }
 
+        // Evento para alternar tema quando o usuário clicar no switch
         toggleSwitch.addEventListener('change', () => {
             if (toggleSwitch.checked) {
                 body.classList.add('dark-mode');
                 themeEmoji.textContent = '☀️';
-                localStorage.setItem('theme', 'dark');
+                localStorage.setItem('theme', 'dark'); // Salva tema escuro no localStorage
             } else {
                 body.classList.remove('dark-mode');
                 themeEmoji.textContent = '🌙';
-                localStorage.setItem('theme', 'light');
+                localStorage.setItem('theme', 'light'); // Salva tema claro no localStorage
             }
         });
     </script>

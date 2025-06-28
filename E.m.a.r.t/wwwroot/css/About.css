@@ -1,104 +1,138 @@
-﻿/* Reset básico */
+﻿/* Reset básico do corpo da página */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fff;
-    color: #000;
+    margin: 0; 
+    padding: 0; 
+    background-color: #fff; 
+    color: #000; 
 }
 
+/* Área principal da página */
 main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 40px 20px;
+    max-width: 1100px; 
+    margin: 0 auto; 
+    padding: 40px 20px; 
 }
 
-/* About */
+/* Seção "About" com layout flexível */
 .about {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 40px;
-    margin-bottom: 60px;
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    gap: 40px; 
+    margin-bottom: 60px; 
 }
 
+/* Texto dentro da seção About */
 .about-text {
-    flex: 1;
-    min-width: 280px;
+    flex: 1; 
+    min-width: 280px; 
 }
 
+    /* Título na seção About */
     .about-text h1 {
-        font-size: 2.5rem;
-        margin-bottom: 20px;
+        font-size: 2.5rem; 
+        margin-bottom: 20px; 
     }
 
+    /* Parágrafos da seção About */
     .about-text p {
-        font-size: 1rem;
-        line-height: 1.6;
+        font-size: 1rem; 
+        line-height: 1.6; 
     }
 
+/* Imagem na seção About */
 .about-img img {
-    width: 300px;
-    height: 400px;
-    object-fit: cover;
-    border-radius: 6px;
-    display: block;
+    width: 300px; 
+    height: 400px; 
+    object-fit: cover; 
+    border-radius: 6px; 
+    display: block; 
 }
 
-/* Contact */
+/* Seção de contato */
 .contact {
-    max-width: 600px;
-    margin: 0 auto 60px auto;
+    max-width: 600px; 
+    margin: 0 auto 60px auto; 
 }
 
+    /* Título da seção contato */
     .contact h2 {
-        font-size: 1.8rem;
-        margin-bottom: 20px;
+        font-size: 1.8rem; 
+        margin-bottom: 20px; 
     }
 
+/* Formulário com layout vertical */
 form {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
 }
 
+/* Campos nome e sobrenome lado a lado */
 .name-fields {
     display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
+    gap: 15px; 
+    margin-bottom: 15px; 
 }
 
+    /* Inputs dentro do grupo name-fields ocupam espaço igual */
     .name-fields input {
         flex: 1;
     }
 
+/* Estilo geral para inputs e textarea */
 input, textarea {
     font-size: 1rem;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    width: 100%;
-    box-sizing: border-box;
+    padding: 12px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    margin-bottom: 15px; 
+    width: 100%; 
+    box-sizing: border-box; 
+    transition: border-color 0.3s; 
 }
 
+/* Textarea pode ser redimensionada verticalmente */
 textarea {
     resize: vertical;
-    height: 120px;
+    height: 120px; 
 }
 
+/* Estilo do botão de submit */
 button[type="submit"] {
-    background-color: #000;
-    color: #fff;
-    padding: 12px;
+    background-color: #000; 
+    color: #fff; 
+    padding: 12px; 
     font-size: 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.3s;
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    width: 100%; 
+    transition: background-color 0.3s; 
 }
 
+    /* Hover do botão muda a cor para um cinza mais claro */
     button[type="submit"]:hover {
         background-color: #333;
     }
+
+/* Foco acessível para inputs, textarea e botão */
+input:focus, textarea:focus, button:focus {
+    outline: 2px solid #000; 
+    outline-offset: 2px;
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 600px) {
+    .about {
+        flex-direction: column; 
+        align-items: center; 
+    }
+
+    .about-img img {
+        width: 100%; 
+        height: auto; 
+        max-width: 300px; 
+    }
+}

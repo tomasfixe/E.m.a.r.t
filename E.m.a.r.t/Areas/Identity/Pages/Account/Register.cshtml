@@ -1,77 +1,94 @@
 ﻿@page
 @model RegisterModel
+
 @{
+    // Define o título da página como "Register"
     ViewData["Title"] = "Register";
 }
 
+<!-- Cabeçalho principal que mostra o título da página -->
 <h1>@ViewData["Title"]</h1>
 
 <div class="row">
     <div class="col-md-4">
+        <!-- Formulário de registo com método POST, inclui o returnUrl para redirecionamento -->
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h2>Crie uma nova conta.</h2>
             <hr />
+            <!-- Mensagens de validação do modelo -->
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
+            <!-- Campo para Email -->
             <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label asp-for="Input.Email">Email</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
 
+            <!-- Campo para Nome -->
             <div class="form-floating mb-3">
                 <input asp-for="Input.Nome" class="form-control" placeholder="Nome completo" />
                 <label asp-for="Input.Nome">Nome</label>
                 <span asp-validation-for="Input.Nome" class="text-danger"></span>
             </div>
 
+            <!-- Campo para NIF -->
             <div class="form-floating mb-3">
                 <input asp-for="Input.NIF" class="form-control" placeholder="123456789" />
                 <label asp-for="Input.NIF">NIF</label>
                 <span asp-validation-for="Input.NIF" class="text-danger"></span>
             </div>
 
+            <!-- Campo para Morada -->
             <div class="form-floating mb-3">
                 <input asp-for="Input.Morada" class="form-control" placeholder="Morada" />
                 <label asp-for="Input.Morada">Morada</label>
                 <span asp-validation-for="Input.Morada" class="text-danger"></span>
             </div>
 
+            <!-- Campo para País -->
             <div class="form-floating mb-3">
                 <input asp-for="Input.Pais" class="form-control" placeholder="Portugal" />
                 <label asp-for="Input.Pais">País</label>
                 <span asp-validation-for="Input.Pais" class="text-danger"></span>
             </div>
 
+            <!-- Campo para Telemóvel -->
             <div class="form-floating mb-3">
                 <input asp-for="Input.Telemovel" class="form-control" placeholder="+351912345678" />
                 <label asp-for="Input.Telemovel">Telemóvel</label>
                 <span asp-validation-for="Input.Telemovel" class="text-danger"></span>
             </div>
 
+            <!-- Campo para Password -->
             <div class="form-floating mb-3">
                 <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
                 <label asp-for="Input.Password">Password</label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
+            <!-- Campo para Confirmar Password -->
             <div class="form-floating mb-3">
                 <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirmar Password" />
                 <label asp-for="Input.ConfirmPassword">Confirmar Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
+            <!-- Botão para submeter o formulário -->
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registar</button>
         </form>
     </div>
+
     <div class="col-md-6 col-md-offset-2">
         <section>
+            <!-- Informação para o utilizador após registo -->
             <h3>Irá receber um email para confirmar a conta</h3>
             <hr />
         </section>
     </div>
 </div>
 
+<!-- Inclui scripts de validação client-side -->
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

@@ -1,89 +1,99 @@
-﻿body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fff;
-    color: #333;
+﻿/* Corpo da página */
+body {
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding: 0; 
+    background-color: #fff; 
+    color: #333; 
 }
 
+/* Links no menu de navegação */
 nav a {
-    margin-left: 1.5rem;
-    text-decoration: none;
-    color: #000;
-    font-weight: 500;
+    margin-left: 1.5rem; 
+    text-decoration: none; 
+    color: #000; 
+    font-weight: 500; 
 }
 
+    /* Link de login com estilo especial */
     nav a.login {
-        background-color: #000;
-        color: #fff;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
+        background-color: #000; 
+        color: #fff; 
+        padding: 0.5rem 1rem; 
+        border-radius: 4px; 
     }
 
+/* Grid para layout responsivo */
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 2rem; 
+    padding: 2rem; 
 }
 
+/* Cartão individual */
 .card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    background: white; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1); 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
 }
 
+/* Área do swiper dentro do cartão */
 .card-swiper {
-    width: 100%;
-    height: 250px; /* altura fixa para manter layout consistente */
-    border-radius: 4px 4px 0 0;
-    overflow: hidden;
+    width: 100%; 
+    height: 250px; 
+    border-radius: 4px 4px 0 0; 
+    overflow: hidden; 
 }
 
+    /* Imagem dentro do swiper */
     .card-swiper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
     }
 
+/* Conteúdo do cartão */
 .card-content {
-    padding: 1rem;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    padding: 1rem; 
+    flex-grow: 1; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
 }
 
+/* Botão principal */
 .btn {
-    background-color: #265C4B; /* fundo escuro */
-    color: #fff;
-    border: 2px solid #146551; /* borda azul clara */
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-weight: bold;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    background-color: #265C4B; 
+    color: #fff; 
+    border: 2px solid #146551; 
+    padding: 0.5rem 1rem; 
+    border-radius: 4px; 
+    font-weight: bold; 
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Animação suave */
 }
 
+    /* Efeitos hover e foco do botão */
     .btn:hover,
     .btn:focus {
-        background-color: #146551; /* fundo azul claro no hover */
-        border-color: #265C4B; /* borda azul escura no hover */
-        color: #fff;
+        background-color: #146551; 
+        border-color: #265C4B; 
+        color: #fff; 
     }
 
-/* Swiper dentro de .card */
+/* Estilo adicional para swiper dentro do cartão */
 .card-swiper {
     width: 100%;
-    height: auto;
-    border-radius: 4px;
-    overflow: hidden;
+    height: auto; 
+    border-radius: 4px; 
+    overflow: hidden; 
 }
 
+    /* Imagem dentro do swiper para layout responsivo */
     .card-swiper img {
-        display: block;
-        width: 100%;
+        display: block; 
+        width: 100%; 
         height: auto;
-    }

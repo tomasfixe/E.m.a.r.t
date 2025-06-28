@@ -4,14 +4,14 @@ using E.m.a.r.t.Data;
 using E.m.a.r.t.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization;  
+using Microsoft.AspNetCore.Authorization;
 
 namespace E.m.a.r.t.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;  // Contexto do EF para aceder à base de dados
+        private readonly ILogger<HomeController> _logger;  // Logger para registo de logs
 
         public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
         {
@@ -24,9 +24,13 @@ namespace E.m.a.r.t.Controllers
         [Authorize]  // Só permite acesso a utilizadores autenticados
         public IActionResult Checkout()
         {
+            // Obtém o utilizador logado na base de dados
             var utilizador = _context.Utilizadores.FirstOrDefault(u => u.UserName == User.Identity.Name);
+
+            // Obtém a lista de fotografias do carrinho guardada na sessão (ou lista vazia)
             var fotosCarrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
 
+            // Cria um ViewModel para passar para a View do carrinho
             var model = new CarrinhoViewModel
             {
                 Nome = User.Identity?.Name ?? "Utilizador",
@@ -36,6 +40,7 @@ namespace E.m.a.r.t.Controllers
 
             if (utilizador != null)
             {
+                // Busca as compras do utilizador para mostrar no ViewBag
                 var compras = _context.Compras
                     .Include(c => c.ListaFotografiasCompradas)
                     .Where(c => c.CompradorFK == utilizador.Id)
@@ -52,17 +57,20 @@ namespace E.m.a.r.t.Controllers
         [Authorize]  // Requer login para finalizar compra
         public IActionResult FinalizarCompra(CarrinhoViewModel model, int? removerId)
         {
+            // Obtém o carrinho da sessão
             var carrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
 
             if (removerId.HasValue)
             {
+                // Se houver um id para remover, remove a foto do carrinho
                 var fotoARemover = carrinho.FirstOrDefault(f => f.Id == removerId.Value);
                 if (fotoARemover != null)
                 {
                     carrinho.Remove(fotoARemover);
-                    HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
+                    HttpContext.Session.SetObjectAsJson("Carrinho", carrinho); // Atualiza a sessão
                 }
 
+                // Retorna a View do carrinho atualizada
                 return View("Checkout", new CarrinhoViewModel
                 {
                     Nome = model.Nome,
@@ -76,14 +84,16 @@ namespace E.m.a.r.t.Controllers
 
             if (utilizador != null && carrinho.Any())
             {
+                // Cria uma nova compra para guardar no BD
                 var novaCompra = new Compras
                 {
                     CompradorFK = utilizador.Id,
                     Data = DateTime.Now,
-                    Estado = Estados.Pago, 
+                    Estado = Estados.Pago,
                     ListaFotografiasCompradas = new List<Fotografias>()
                 };
 
+                // Para cada foto no carrinho, adiciona à lista da compra
                 foreach (var foto in carrinho)
                 {
                     var fotoDb = _context.Fotografias.Find(foto.Id);
@@ -93,13 +103,13 @@ namespace E.m.a.r.t.Controllers
                     }
                 }
 
-                _context.Compras.Add(novaCompra);
-                _context.SaveChanges();
+                _context.Compras.Add(novaCompra);  // Adiciona a compra ao contexto
+                _context.SaveChanges();  // Salva as alterações no BD
             }
 
-            HttpContext.Session.Remove("Carrinho");
+            HttpContext.Session.Remove("Carrinho"); // Limpa o carrinho da sessão
 
-            // Carrega novamente as compras do utilizador
+            // Carrega novamente as compras do utilizador para mostrar
             var comprasAtualizadas = _context.Compras
                 .Include(c => c.ListaFotografiasCompradas)
                 .Where(c => c.CompradorFK == utilizador.Id)
@@ -107,6 +117,7 @@ namespace E.m.a.r.t.Controllers
 
             ViewBag.Compras = comprasAtualizadas;
 
+            // Retorna a View do carrinho com lista vazia, pois a compra foi finalizada
             return View("Checkout", new CarrinhoViewModel
             {
                 Nome = model.Nome,
@@ -118,46 +129,51 @@ namespace E.m.a.r.t.Controllers
         [HttpPost]
         public IActionResult Adicionar(int id)
         {
+            // Obtém o carrinho da sessão ou cria um novo
             var carrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
 
-            if (!carrinho.Any(f => f.Id == id))
+            if (!carrinho.Any(f => f.Id == id))  // Só adiciona se ainda não estiver no carrinho
             {
                 var foto = _context.Fotografias.FirstOrDefault(f => f.Id == id);
                 if (foto != null)
                 {
                     carrinho.Add(foto);
-                    HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
+                    HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);  // Atualiza a sessão
                 }
             }
 
-            return RedirectToAction("Loja");
+            return RedirectToAction("Loja");  // Redireciona para a loja após adicionar
         }
 
         public IActionResult Confirmacao()
         {
-            return View();
+            return View();  // View simples de confirmação (ex: compra finalizada)
         }
 
         // --- Upload / Galeria ---
 
         public IActionResult Index()
         {
+            // Obtém coleções e suas fotografias para mostrar na página inicial
             var colecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList();
             return View(colecoes);
         }
-        [Authorize(Roles = "Admin")] //Só utilizadores com a role Admin podem aceder
+
+        [Authorize(Roles = "Admin")] // Só utilizadores com a role Admin podem aceder
         [HttpGet]
         public IActionResult Upload()
         {
-            ViewBag.ListaColecoes = _context.Colecoes.ToList();
-            ViewBag.NovaFoto = new Fotografias();
+            ViewBag.ListaColecoes = _context.Colecoes.ToList();  // Lista para dropdown ou similar
+            ViewBag.NovaFoto = new Fotografias();  // Objeto vazio para o formulário
 
             var lista = _context.Fotografias.Include(f => f.Colecao).ToList();
             var novaColecao = new Colecao();
 
+            // Passa uma tupla com lista de fotos e nova coleção para a View
             return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
         }
-        [Authorize(Roles = "Admin")] 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upload(Fotografias novaFoto, IFormFile imagem)
@@ -166,6 +182,7 @@ namespace E.m.a.r.t.Controllers
             {
                 if (imagem != null && imagem.Length > 0)
                 {
+                    // Gera nome único para o ficheiro da imagem e guarda na pasta wwwroot/imagens
                     var nomeFicheiro = Guid.NewGuid().ToString() + Path.GetExtension(imagem.FileName);
                     var caminho = Path.Combine("wwwroot/imagens", nomeFicheiro);
 
@@ -179,9 +196,10 @@ namespace E.m.a.r.t.Controllers
 
                 _context.Fotografias.Add(novaFoto);
                 _context.SaveChanges();
-                return RedirectToAction("Upload");
+                return RedirectToAction("Upload");  // Redireciona para limpar formulário
             }
 
+            // Se houver erro, recarrega dados para a View
             ViewBag.ListaColecoes = _context.Colecoes.ToList();
             ViewBag.NovaFoto = novaFoto;
 
@@ -196,6 +214,7 @@ namespace E.m.a.r.t.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
+            // Apaga fotografia da base de dados e remove ficheiro do disco
             var foto = _context.Fotografias.FirstOrDefault(f => f.Id == id);
 
             if (foto != null)
@@ -216,6 +235,7 @@ namespace E.m.a.r.t.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int Id, string Titulo, string? Descricao, DateTime Data, decimal Preco, int? ColecaoFK, string Ficheiro)
         {
+            // Edita uma fotografia existente com os dados enviados
             var foto = _context.Fotografias.FirstOrDefault(f => f.Id == Id);
 
             if (foto != null)
@@ -244,6 +264,7 @@ namespace E.m.a.r.t.Controllers
                 return RedirectToAction("Upload");
             }
 
+            // Em caso de erro, recarrega dados para a View
             ViewBag.ListaColecoes = _context.Colecoes.ToList();
             ViewBag.NovaFoto = new Fotografias();
 
@@ -256,6 +277,7 @@ namespace E.m.a.r.t.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditarColecao(int Id, string Nome, string? Descricao)
         {
+            // Edita uma coleção existente com os dados enviados
             var colecao = _context.Colecoes.FirstOrDefault(c => c.Id == Id);
 
             if (colecao != null)
@@ -273,6 +295,7 @@ namespace E.m.a.r.t.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EliminarColecao(int id)
         {
+            // Apaga coleção e remove ligação das fotografias associadas
             var colecao = _context.Colecoes.Include(c => c.ListaFotografias).FirstOrDefault(c => c.Id == id);
 
             if (colecao != null)
@@ -289,6 +312,7 @@ namespace E.m.a.r.t.Controllers
 
         public IActionResult Loja()
         {
+            // Obtém coleções e fotos sem coleção para mostrar na loja
             var colecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList();
             var fotosSemColecao = _context.Fotografias.Where(f => f.ColecaoFK == null).ToList();
 
@@ -303,9 +327,11 @@ namespace E.m.a.r.t.Controllers
 
         public IActionResult Details(int id)
         {
+            // Mostra detalhes de uma fotografia
             var foto = _context.Fotografias.FirstOrDefault(f => f.Id == id);
             if (foto == null) return NotFound();
 
+            // Busca fotografias relacionadas da mesma coleção (exclui a atual)
             var relacionadas = _context.Fotografias
                 .Where(f => f.ColecaoFK == foto.ColecaoFK && f.Id != id)
                 .Take(6)
@@ -317,18 +343,20 @@ namespace E.m.a.r.t.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            return View();  // Página de política de privacidade
         }
     }
 
-    // --- Extensões de Sessão (Json)
+    // --- Extensões de Sessão (Json) ---
     public static class SessionExtensions
     {
+        // Guarda um objeto na sessão serializado como JSON
         public static void SetObjectAsJson(this ISession session, string key, object value)
         {
             session.SetString(key, JsonConvert.SerializeObject(value));
         }
 
+        // Obtém um objeto da sessão desserializando JSON
         public static T? GetObjectFromJson<T>(this ISession session, string key)
         {
             var value = session.GetString(key);

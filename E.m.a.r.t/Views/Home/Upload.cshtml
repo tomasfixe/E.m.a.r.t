@@ -1,18 +1,23 @@
 ﻿@model Tuple<IEnumerable<E.m.a.r.t.Models.Fotografias>, E.m.a.r.t.Models.Colecao>
+// Esta view utiliza uma tupla como modelo contendo:
+// - Uma coleção de objetos do tipo "Fotografias" (lista de fotos existentes)
+// - Um objeto do tipo "Colecao" (utilizado para criar uma nova coleção)
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+// Permite o uso de Tag Helpers do ASP.NET, como asp-for e asp-action
 
 @{
-    Layout = "_Layout";
-    var listaFotos = Model.Item1;
-    var novaColecao = Model.Item2;
-    var novaFoto = ViewBag.NovaFoto as E.m.a.r.t.Models.Fotografias;
+    Layout = "_Layout"; // Define que esta view utilizará o layout principal da aplicação
+    var listaFotos = Model.Item1; // Extrai a lista de fotografias da tupla
+    var novaColecao = Model.Item2; // Extrai o objeto de nova coleção da tupla
+    var novaFoto = ViewBag.NovaFoto as E.m.a.r.t.Models.Fotografias; // Fotografia usada para preenchimento do formulário de upload
 }
 
 <h2>Nova Fotografia</h2>
 
 @if (!ViewData.ModelState.IsValid)
 {
+    // Bloco de exibição de erros de validação
     <div class="alert alert-danger">
         <ul>
             @foreach (var state in ViewData.ModelState)
@@ -26,7 +31,7 @@
     </div>
 }
 
-<!--Formulário para dar upload de fotos-->
+<!-- Formulário de upload de nova fotografia -->
 <form asp-action="Upload" method="post" enctype="multipart/form-data" class="mb-4">
     <div class="form-group">
         <label asp-for="@novaFoto.Titulo"></label>
@@ -71,7 +76,7 @@
 
 <hr />
 <h2>Nova Coleção</h2>
-<!--Formulário para criar coleções-->
+<!-- Formulário para criação de nova coleção -->
 <form asp-action="CriarColecao" method="post" class="mb-4">
     <div class="form-group">
         <label asp-for="@novaColecao.Nome">Nome da Coleção</label>
@@ -90,7 +95,7 @@
 
 <hr />
 <h2>Lista de Coleções</h2>
-
+<!-- Tabela com a lista de coleções disponíveis, com formulários embutidos para editar e eliminar -->
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -103,7 +108,7 @@
         @foreach (var colecao in ViewBag.ListaColecoes as List<E.m.a.r.t.Models.Colecao>)
         {
             <tr>
-                <!-- Formulário de edição -->
+                <!-- Formulário de edição de coleção -->
                 <form asp-action="EditarColecao" method="post" class="d-flex align-items-center">
                     <input type="hidden" name="Id" value="@colecao.Id" />
 
@@ -118,7 +123,7 @@
                 </td>
                 </form>
 
-                <!-- Botão de eliminar -->
+                <!-- Botão de eliminar coleção -->
                 <td>
                     <form asp-action="EliminarColecao" method="post" class="d-inline" onsubmit="return confirm('Eliminar esta coleção? As fotografias associadas ficarão sem coleção.')">
                         <input type="hidden" name="id" value="@colecao.Id" />
@@ -131,7 +136,7 @@
 </table>
 
 <h2>Lista de Fotografias</h2>
-<!--Lista onde aparecem as fotografias criadas, onde é possivel editar parametros-->
+<!-- Tabela com a lista de fotografias existentes com campos editáveis -->
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -148,6 +153,7 @@
         @foreach (var foto in Model.Item1)
         {
             <tr>
+                <!-- Formulário de edição de fotografia -->
                 <form asp-action="Edit" method="post" class="d-flex align-items-center">
                     <input type="hidden" name="Id" value="@foto.Id" />
                     <input type="hidden" name="Ficheiro" value="@foto.Ficheiro" />
@@ -166,8 +172,9 @@
                 <td><input type="text" name="Preco" value="@foto.Preco.ToString("0.00")" class="form-control" /></td>
 
                 <td>
-						@if (!string.IsNullOrEmpty(foto.Ficheiro)) // Verifica se a foto tem um ficheiro associado
-						{
+                        @if (!string.IsNullOrEmpty(foto.Ficheiro))
+                        {
+                            // Exibe a miniatura da imagem se o ficheiro estiver definido
                         <img src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" width="100" />
                         }
                 </td>
@@ -177,6 +184,7 @@
                 </td>
                 </form>
 
+                <!-- Botão de eliminar fotografia -->
                 <td>
                     <form asp-action="Delete" method="post">
                         <input type="hidden" name="id" value="@foto.Id" />
@@ -189,5 +197,6 @@
 </table>
 
 @section Scripts {
+        // Inclusão de scripts de validação de formulário client-side
     <partial name="_ValidationScriptsPartial" />
 }
