@@ -1,0 +1,80 @@
+﻿@model CarrinhoViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<h2>Checkout</h2>
+
+@if (Model.Fotografias.Any())
+{
+    <form asp-action="FinalizarCompra" method="post">
+        <div class="form-group">
+            <label>Nome:</label>
+            <input type="text" name="Nome" class="form-control" value="@Model.Nome" readonly />
+        </div>
+        <div class="form-group">
+            <label>NIF:</label>
+            <input type="text" name="NIF" class="form-control" value="@Model.NIF" required />
+        </div>
+
+        <h4>Fotografias no carrinho</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Preço</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var foto in Model.Fotografias)
+                {
+                    <tr>
+                        <td>@foto.Titulo</td>
+                        <td>@foto.Preco.ToString("C")</td>
+                        <td>
+                            <form asp-action="FinalizarCompra" method="post">
+                                <input type="hidden" name="removerId" value="@foto.Id" />
+                                <input type="hidden" name="Nome" value="@Model.Nome" />
+                                <input type="hidden" name="NIF" value="@Model.NIF" />
+                                <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <button type="submit" class="btn btn-success">Finalizar Compra</button>
+    </form>
+}
+else
+{
+    <p>O seu carrinho está vazio.</p>
+}
+
+<hr />
+
+<h4>Compras anteriores</h4>
+
+@if (ViewBag.Compras != null)
+{
+    foreach (var compra in ViewBag.Compras as List<Compras>)
+    {
+        <div class="mb-3 border rounded p-3">
+            <p><strong>Data:</strong> @compra.Data.ToShortDateString()</p>
+            <p><strong>Estado:</strong> @compra.Estado</p>
+            <ul>
+                @foreach (var f in compra.ListaFotografiasCompradas)
+                {
+                    <li>@f.Titulo - @f.Preco.ToString("C")</li>
+                }
+            </ul>
+        </div>
+    }
+}
+else
+{
+    <p>Sem compras registadas.</p>
+}

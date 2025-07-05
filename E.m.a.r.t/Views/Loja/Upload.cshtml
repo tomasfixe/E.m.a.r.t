@@ -1,0 +1,103 @@
+﻿@model Tuple<IEnumerable<Fotografias>, Colecao>
+
+@{
+    ViewData["Title"] = "Upload";
+    var listaFotos = Model.Item1;
+    var novaColecao = Model.Item2;
+    var colecoes = ViewBag.ListaColecoes as List<Colecao>;
+    var novaFoto = ViewBag.NovaFoto as Fotografias;
+}
+
+<h2>Upload de Fotografias</h2>
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label>Título</label>
+        <input asp-for="Item2.Nome" class="form-control" name="Titulo" />
+    </div>
+    <div class="form-group">
+        <label>Descrição</label>
+        <textarea asp-for="Item2.Descricao" class="form-control" name="Descricao"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Data</label>
+        <input type="date" class="form-control" name="Data" />
+    </div>
+    <div class="form-group">
+        <label>Preço</label>
+        <input type="number" step="0.01" class="form-control" name="Preco" />
+    </div>
+    <div class="form-group">
+        <label>Coleção</label>
+        <select name="ColecaoFK" class="form-control">
+            <option value="">Sem coleção</option>
+            @foreach (var col in colecoes)
+            {
+                <option value="@col.Id">@col.Nome</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Imagem</label>
+        <input type="file" name="imagem" class="form-control-file" />
+    </div>
+    <button type="submit" class="btn btn-primary">Adicionar</button>
+</form>
+
+<hr />
+
+<h3>Fotografias Existentes</h3>
+
+@if (listaFotos.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Imagem</th>
+                <th>Título</th>
+                <th>Data</th>
+                <th>Preço</th>
+                <th>Coleção</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var foto in listaFotos)
+            {
+                <tr>
+                    <td><img src="~/imagens/@foto.Ficheiro" width="100" /></td>
+                    <td>@foto.Titulo</td>
+                    <td>@foto.Data.ToShortDateString()</td>
+                    <td>@foto.Preco.ToString("C")</td>
+                    <td>@(foto.Colecao?.Nome ?? "Sem coleção")</td>
+                    <td>
+                        <form asp-action="Delete" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@foto.Id" />
+                            <button class="btn btn-danger btn-sm" type="submit">Apagar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Sem fotografias ainda.</p>
+}
+
+<hr />
+
+<h3>Criar Nova Coleção</h3>
+
+<form asp-action="CriarColecao" method="post">
+    <div class="form-group">
+        <label>Nome da Coleção</label>
+        <input asp-for="Item2.Nome" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Descrição</label>
+        <textarea asp-for="Item2.Descricao" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-secondary">Criar Coleção</button>
+</form>

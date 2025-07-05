@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Identity\Pages\index.cshtml.cs" />
+    <Compile Remove="Controllers\LojaController.cs" />
     <Compile Remove="Models\Categorias.cs" />
     <Compile Remove="Models\Class.cs" />
     <Compile Remove="Views\Home\Class.cs" />

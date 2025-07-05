@@ -1,0 +1,63 @@
+﻿@model LojaViewModel
+
+@{
+    ViewData["Title"] = "Loja";
+}
+
+<h2>Loja</h2>
+
+@foreach (var colecao in Model.Colecoes)
+{
+    <div class="mb-5">
+        <h3>@colecao.Nome</h3>
+        <p>@colecao.Descricao</p>
+
+        <div class="row">
+            @foreach (var foto in colecao.ListaFotografias)
+            {
+                <div class="col-md-3 mb-3">
+                    <div class="card">
+                        <img class="card-img-top" src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" />
+                        <div class="card-body">
+                            <h5 class="card-title">@foto.Titulo</h5>
+                            <p class="card-text">@foto.Preco.ToString("C")</p>
+
+                            <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
+                                <input type="hidden" name="id" value="@foto.Id" />
+                                <button type="submit" class="btn btn-primary btn-sm">Adicionar ao Carrinho</button>
+                            </form>
+
+                            <a asp-controller="Galeria" asp-action="Details" asp-route-id="@foto.Id" class="btn btn-link btn-sm">Ver detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@if (Model.FotografiasSemColecao.Any())
+{
+    <h3>Outras Fotografias</h3>
+    <div class="row">
+        @foreach (var foto in Model.FotografiasSemColecao)
+        {
+            <div class="col-md-3 mb-3">
+                <div class="card">
+                    <img class="card-img-top" src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" />
+                    <div class="card-body">
+                        <h5 class="card-title">@foto.Titulo</h5>
+                        <p class="card-text">@foto.Preco.ToString("C")</p>
+
+                        <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
+                            <input type="hidden" name="id" value="@foto.Id" />
+                            <button type="submit" class="btn btn-primary btn-sm">Adicionar ao Carrinho</button>
+                        </form>
+
+                        <a asp-controller="Galeria" asp-action="Details" asp-route-id="@foto.Id" class="btn btn-link btn-sm">Ver detalhes</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
