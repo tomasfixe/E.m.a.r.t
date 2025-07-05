@@ -8,12 +8,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\NovaPasta\**" />
+    <Compile Remove="NovaPasta1\**" />
+    <Compile Remove="NovaPasta2\**" />
+    <Compile Remove="NovaPasta\**" />
     <Compile Remove="wwwroot\NovaPasta\**" />
     <Compile Remove="wwwroot\Uploads\**" />
+    <Content Remove="Areas\NovaPasta\**" />
+    <Content Remove="NovaPasta1\**" />
+    <Content Remove="NovaPasta2\**" />
+    <Content Remove="NovaPasta\**" />
     <Content Remove="wwwroot\NovaPasta\**" />
     <Content Remove="wwwroot\Uploads\**" />
+    <EmbeddedResource Remove="Areas\NovaPasta\**" />
+    <EmbeddedResource Remove="NovaPasta1\**" />
+    <EmbeddedResource Remove="NovaPasta2\**" />
+    <EmbeddedResource Remove="NovaPasta\**" />
     <EmbeddedResource Remove="wwwroot\NovaPasta\**" />
     <EmbeddedResource Remove="wwwroot\Uploads\**" />
+    <None Remove="Areas\NovaPasta\**" />
+    <None Remove="NovaPasta1\**" />
+    <None Remove="NovaPasta2\**" />
+    <None Remove="NovaPasta\**" />
     <None Remove="wwwroot\NovaPasta\**" />
     <None Remove="wwwroot\Uploads\**" />
   </ItemGroup>
