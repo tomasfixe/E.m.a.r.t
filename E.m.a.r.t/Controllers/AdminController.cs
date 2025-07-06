@@ -62,13 +62,11 @@ public class AdminController : Controller
     }
 
     // Mantém os métodos Delete, Edit, EditarColecao, EliminarColecao...
-
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult CriarColecao(Colecao novaColecao)
+    public IActionResult CriarColecao([Bind(Prefix = "Item2")] Colecao novaColecao, int[] ListaFotografiasIds)
     {
-        // Validação: garantir que tenha pelo menos 1 foto na lista
-        if (novaColecao.ListaFotografias == null || !novaColecao.ListaFotografias.Any())
+        if (ListaFotografiasIds == null || ListaFotografiasIds.Length == 0)
         {
             ModelState.AddModelError("", "É obrigatório associar pelo menos uma fotografia à coleção.");
         }
@@ -77,14 +75,32 @@ public class AdminController : Controller
         {
             _context.Colecoes.Add(novaColecao);
             _context.SaveChanges();
+
+            var fotosParaAtualizar = _context.Fotografias.Where(f => ListaFotografiasIds.Contains(f.Id)).ToList();
+
+            foreach (var foto in fotosParaAtualizar)
+            {
+                foto.ColecaoFK = novaColecao.Id;
+            }
+
+            _context.SaveChanges();
+
             return RedirectToAction("Upload");
         }
 
-        ViewBag.ListaColecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList(); // ajustei para ListaFotografias
+        // Debug: mostra erros no terminal ou output
+        foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+        {
+            Console.WriteLine("Erro: " + error.ErrorMessage);
+        }
+
+        ViewBag.ListaColecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList();
         ViewBag.ListaFotos = _context.Fotografias.ToList();
         ViewBag.NovaFoto = new Fotografias();
 
         var lista = _context.Fotografias.Include(f => f.Colecao).ToList();
         return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
     }
+
+
 }
