@@ -135,5 +135,28 @@ public class AdminController : Controller
         return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult EliminarColecao(int id)
+    {
+        var colecao = _context.Colecoes
+            .Include(c => c.ListaFotografias)
+            .FirstOrDefault(c => c.Id == id);
 
+        if (colecao == null)
+        {
+            return NotFound();
+        }
+
+        // Desassociar fotografias antes de apagar a coleção
+        foreach (var foto in colecao.ListaFotografias)
+        {
+            foto.ColecaoFK = null;
+        }
+
+        _context.Colecoes.Remove(colecao);
+        _context.SaveChanges();
+
+        return RedirectToAction("Upload");
+    }
 }
