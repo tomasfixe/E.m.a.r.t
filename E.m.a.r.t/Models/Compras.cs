@@ -5,34 +5,63 @@ using System;
 
 namespace E.m.a.r.t.Models
 {
-    // Compras efetuadas por um utilizador
+    /// <summary>
+    /// Representa uma compra efetuada por um utilizador.
+    /// </summary>
     public class Compras
     {
+        /// <summary>
+        /// Chave primária da compra.
+        /// </summary>
         [Key]
-        public int Id { get; set; }  // Chave primária da compra
+        public int Id { get; set; }
 
-        public DateTime Data { get; set; }  // Data da compra
+        /// <summary>
+        /// Data em que a compra foi efetuada.
+        /// </summary>
+        public DateTime Data { get; set; }
 
-        public Estados Estado { get; set; }  // Estado atual da compra (enum)
+        /// <summary>
+        /// Estado atual da compra.
+        /// </summary>
+        public Estados Estado { get; set; }
 
-        // FK para o comprador (ID do utilizador)
+        /// <summary>
+        /// Chave estrangeira para o comprador (utilizador).
+        /// </summary>
         [ForeignKey(nameof(Comprador))]
         public int CompradorFK { get; set; }
 
+        /// <summary>
+        /// Navegação para o utilizador comprador.
+        /// </summary>
         [ValidateNever]
-        public Utilizadores Comprador { get; set; } = null!; // Navegação para o comprador (utilizador)
+        public Utilizadores Comprador { get; set; } = null!;
 
-        // Coleção de fotografias compradas nesta compra
+        /// <summary>
+        /// Lista das fotografias compradas nesta compra.
+        /// </summary>
         public ICollection<Fotografias> ListaFotografiasCompradas { get; set; } = new List<Fotografias>();
     }
 
-    // Estados possíveis associados a uma compra
+    /// <summary>
+    /// Estados possíveis de uma compra.
+    /// </summary>
     public enum Estados
     {
-        Pendente,  // Compra ainda pendente
-        Pago,      // Compra paga
-        Enviada,   // Compra enviada
-        Entregue,  // Compra entregue
-        Terminada  // Compra finalizada/terminada
+        /// <summary>Compra ainda pendente.</summary>
+        Pendente,
+
+        /// <summary>Compra paga.</summary>
+        Pago,
+
+        /// <summary>Compra enviada.</summary>
+        Enviada,
+
+        /// <summary>Compra entregue.</summary>
+        Entregue,
+
+        /// <summary>Compra finalizada/terminada.</summary>
+        Terminada
     }
 }

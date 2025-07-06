@@ -1,12 +1,18 @@
 namespace E.m.a.r.t.Models
 {
-    // Modelo usado para representar informações de erro na aplicação
+    /// <summary>
+    /// Modelo usado para representar informações de erro na aplicação.
+    /// </summary>
     public class ErrorViewModel
     {
-        // Id da requisição que gerou o erro (pode ser nulo)
+        /// <summary>
+        /// Identificador da requisição que gerou o erro (pode ser nulo).
+        /// </summary>
         public string? RequestId { get; set; }
 
-        // Propriedade que indica se o RequestId deve ser exibido
+        /// <summary>
+        /// Indica se o RequestId deve ser exibido.
+        /// </summary>
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
 }

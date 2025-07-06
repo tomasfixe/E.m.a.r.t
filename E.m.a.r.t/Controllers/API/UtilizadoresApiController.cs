@@ -5,27 +5,38 @@ using E.m.a.r.t.Models;
 
 namespace E.m.a.r.t.Controllers
 {
+    /// <summary>
+    /// API para gestão de utilizadores.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class UtilizadoresApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Construtor que injeta o contexto da base de dados.
+        /// </summary>
         public UtilizadoresApiController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/UtilizadoresApi
-        // Devolve todos os utilizadores
+        /// <summary>
+        /// Devolve todos os utilizadores.
+        /// </summary>
+        /// <returns>Lista de utilizadores.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilizadores>>> GetUtilizadores()
         {
             return await _context.Utilizadores.ToListAsync();
         }
 
-        // GET: api/UtilizadoresApi/5
-        // Devolve um utilizador específico pelo ID
+        /// <summary>
+        /// Devolve um utilizador pelo seu ID.
+        /// </summary>
+        /// <param name="id">ID do utilizador.</param>
+        /// <returns>Utilizador encontrado ou NotFound.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Utilizadores>> GetUtilizador(int id)
         {
@@ -37,8 +48,11 @@ namespace E.m.a.r.t.Controllers
             return utilizador;
         }
 
-        // POST: api/UtilizadoresApi
-        // Adiciona um novo utilizador
+        /// <summary>
+        /// Adiciona um novo utilizador à base de dados.
+        /// </summary>
+        /// <param name="utilizador">Objeto utilizador a adicionar.</param>
+        /// <returns>Resposta 201 com o novo utilizador criado.</returns>
         [HttpPost]
         public async Task<ActionResult<Utilizadores>> PostUtilizador(Utilizadores utilizador)
         {
@@ -48,8 +62,12 @@ namespace E.m.a.r.t.Controllers
             return CreatedAtAction(nameof(GetUtilizador), new { id = utilizador.Id }, utilizador);
         }
 
-        // PUT: api/UtilizadoresApi/5
-        // Atualiza um utilizador existente
+        /// <summary>
+        /// Atualiza um utilizador existente.
+        /// </summary>
+        /// <param name="id">ID do utilizador a atualizar.</param>
+        /// <param name="utilizador">Objeto utilizador atualizado.</param>
+        /// <returns>NoContent se atualizado com sucesso, BadRequest se IDs diferentes.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUtilizador(int id, Utilizadores utilizador)
         {
@@ -73,8 +91,11 @@ namespace E.m.a.r.t.Controllers
             return NoContent();
         }
 
-        // DELETE: api/UtilizadoresApi/5
-        // Elimina um utilizador
+        /// <summary>
+        /// Elimina um utilizador pelo seu ID.
+        /// </summary>
+        /// <param name="id">ID do utilizador a eliminar.</param>
+        /// <returns>NoContent se sucesso, NotFound se não encontrado.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUtilizador(int id)
         {
@@ -88,7 +109,11 @@ namespace E.m.a.r.t.Controllers
             return NoContent();
         }
 
-        // Verifica se o utilizador existe
+        /// <summary>
+        /// Verifica se um utilizador existe dado o ID.
+        /// </summary>
+        /// <param name="id">ID do utilizador.</param>
+        /// <returns>True se existir, false caso contrário.</returns>
         private bool UtilizadorExists(int id)
         {
             return _context.Utilizadores.Any(u => u.Id == id);

@@ -14,6 +14,10 @@ public class CarrinhoController : Controller
         _context = context;
     }
 
+    /// <summary>
+    /// Página de checkout do carrinho de compras.
+    /// </summary>
+    /// <returns></returns>
     [Authorize]
     public IActionResult Checkout()
     {
@@ -40,6 +44,12 @@ public class CarrinhoController : Controller
         return View(model);
     }
 
+    /// <summary>
+    /// Finaliza a compra do carrinho, removendo fotografias selecionadas ou finalizando a compra.
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="removerId"></param>
+    /// <returns></returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize]
@@ -106,6 +116,11 @@ public class CarrinhoController : Controller
         });
     }
 
+    /// <summary>
+    /// Adiciona uma fotografia ao carrinho de compras.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpPost]
     public IActionResult Adicionar(int id)
     {

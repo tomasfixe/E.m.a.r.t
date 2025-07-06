@@ -6,6 +6,7 @@
 
 <h2>Loja</h2>
 
+@* Percorre as coleções e mostra o nome e descrição *@
 @foreach (var colecao in Model.Colecoes)
 {
     <div class="mb-5">
@@ -13,6 +14,7 @@
         <p>@colecao.Descricao</p>
 
         <div class="row">
+            @* Para cada fotografia na coleção, mostra imagem, título, preço e botão para adicionar ao carrinho *@
             @foreach (var foto in colecao.ListaFotografias)
             {
                 <div class="col-md-3 mb-3">
@@ -22,6 +24,7 @@
                             <h5 class="card-title">@foto.Titulo</h5>
                             <p class="card-text">@foto.Preco.ToString("C")</p>
 
+                            @* Formulário para adicionar a fotografia ao carrinho *@
                             <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
                                 <input type="hidden" name="id" value="@foto.Id" />
                                 <button type="submit" class="btn btn-primary btn-sm">Adicionar ao Carrinho</button>
@@ -34,6 +37,7 @@
     </div>
 }
 
+@* Se existirem fotografias sem coleção, mostra-as numa secção à parte *@
 @if (Model.FotografiasSemColecao.Any())
 {
     <h3>Outras Fotografias</h3>
@@ -47,6 +51,7 @@
                         <h5 class="card-title">@foto.Titulo</h5>
                         <p class="card-text">@foto.Preco.ToString("C")</p>
 
+                        @* Botão para adicionar a fotografia sem coleção ao carrinho *@
                         <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
                             <input type="hidden" name="id" value="@foto.Id" />
                             <button type="submit" class="btn btn-primary btn-sm">Adicionar ao Carrinho</button>

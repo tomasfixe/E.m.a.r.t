@@ -4,8 +4,17 @@ using E.m.a.r.t.Models;
 
 namespace E.m.a.r.t.Data
 {
+    /// <summary>
+    /// Classe responsável por inicializar dados essenciais na base de dados,
+    /// como roles e utilizadores predefinidos.
+    /// </summary>
     public static class SeedData
     {
+        /// <summary>
+        /// Método assíncrono que garante a criação das roles e do utilizador administrador.
+        /// </summary>
+        /// <param name="serviceProvider">Fornecedor de serviços para resolver dependências.</param>
+        /// <returns>Task para aguardar a conclusão da operação.</returns>
         public static async Task InicializarAsync(IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
@@ -14,7 +23,7 @@ namespace E.m.a.r.t.Data
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            // Criar roles se não existirem
+            // Criar roles "Admin" e "User" se ainda não existirem
             string[] roles = { "Admin", "User" };
             foreach (var role in roles)
             {
@@ -22,7 +31,7 @@ namespace E.m.a.r.t.Data
                     await roleManager.CreateAsync(new IdentityRole(role));
             }
 
-            // Criar utilizador admin se ainda não existir
+            // Verificar se o utilizador administrador existe, caso contrário cria-o
             var emailAdmin = "projeto.emart@gmail.com";
             var adminPassword = "admin123";
             var admin = await userManager.FindByEmailAsync(emailAdmin);
@@ -38,12 +47,12 @@ namespace E.m.a.r.t.Data
                 var result = await userManager.CreateAsync(admin, adminPassword);
                 if (result.Succeeded)
                 {
-                    // Confirmar email e associar role
+                    // Confirmar email e atribuir role "Admin"
                     var token = await userManager.GenerateEmailConfirmationTokenAsync(admin);
                     await userManager.ConfirmEmailAsync(admin, token);
                     await userManager.AddToRoleAsync(admin, "Admin");
 
-                    // Adiciona registo correspondente na tabela Utilizadores
+                    // Adicionar entrada na tabela Utilizadores para o administrador
                     dbContext.Utilizadores.Add(new Utilizadores
                     {
                         Nome = "Administrador",

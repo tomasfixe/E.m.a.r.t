@@ -14,6 +14,10 @@ public class AdminController : Controller
         _context = context;
     }
 
+    /// <summary>
+    /// Página de upload de fotografias e gestão de coleções.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public IActionResult Upload()
     {
@@ -27,6 +31,12 @@ public class AdminController : Controller
         return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
     }
 
+    /// <summary>
+    /// Método para upload de uma nova fotografia.
+    /// </summary>
+    /// <param name="novaFoto"></param>
+    /// <param name="imagem"></param>
+    /// <returns></returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Upload(Fotografias novaFoto, IFormFile imagem)
@@ -61,6 +71,11 @@ public class AdminController : Controller
         return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
     }
 
+    /// <summary>
+    /// Método para editar uma fotografia existente.
+    /// </summary>
+    /// <param name="fotografiaAtualizada"></param>
+    /// <returns></returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult EditarFotografia(Fotografias fotografiaAtualizada)
@@ -82,7 +97,6 @@ public class AdminController : Controller
             return RedirectToAction("Upload");
         }
 
-        // Se houver erro, recarrega os dados
         ViewBag.ListaColecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList();
         ViewBag.ListaFotos = _context.Fotografias.Include(f => f.Colecao).ToList();
         ViewBag.NovaFoto = new Fotografias();
@@ -93,8 +107,12 @@ public class AdminController : Controller
         return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
     }
 
-
-    // Mantém os métodos Delete, Edit, EditarColecao, EliminarColecao...
+    /// <summary>
+    /// Método para criar uma nova coleção de fotografias.
+    /// </summary>
+    /// <param name="novaColecao"></param>
+    /// <param name="ListaFotografiasIds"></param>
+    /// <returns></returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult CriarColecao([Bind(Prefix = "Item2")] Colecao novaColecao, int[] ListaFotografiasIds)
@@ -121,7 +139,6 @@ public class AdminController : Controller
             return RedirectToAction("Upload");
         }
 
-        // Debug: mostra erros no terminal ou output
         foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
         {
             Console.WriteLine("Erro: " + error.ErrorMessage);
@@ -135,6 +152,11 @@ public class AdminController : Controller
         return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
     }
 
+    /// <summary>
+    /// Método para eliminar uma coleção de fotografias.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult EliminarColecao(int id)
@@ -148,7 +170,6 @@ public class AdminController : Controller
             return NotFound();
         }
 
-        // Desassociar fotografias antes de apagar a coleção
         foreach (var foto in colecao.ListaFotografias)
         {
             foto.ColecaoFK = null;

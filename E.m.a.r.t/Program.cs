@@ -8,28 +8,36 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// String de conexão
+/// <summary>
+/// Obtem a string de conexão à base de dados.
+/// </summary>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-// EF Core com SQL Server
+/// <summary>
+/// Configura o contexto da base de dados usando SQL Server.
+/// </summary>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Configura controllers com JSON serialização que ignora ciclos
+/// <summary>
+/// Adiciona suporte a controllers e configura JSON para ignorar ciclos de referência.
+/// </summary>
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
-        // Ignora qualquer ciclo de referência em objetos
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        // Opcional: produz JSON com identação
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
-// Páginas de erro detalhadas (dev only)
+/// <summary>
+/// Adiciona páginas de erro detalhadas em ambiente de desenvolvimento.
+/// </summary>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Identity + Roles
+/// <summary>
+/// Configura Identity com suporte a roles e regras de password.
+/// </summary>
 builder.Services
     .AddIdentity<IdentityUser, IdentityRole>(options =>
     {
@@ -41,16 +49,24 @@ builder.Services
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// Razor Pages + MVC
+/// <summary>
+/// Adiciona suporte a Razor Pages e MVC.
+/// </summary>
 builder.Services.AddRazorPages();
 
-// Sessões
+/// <summary>
+/// Ativa suporte a sessões.
+/// </summary>
 builder.Services.AddSession();
 
-// Serviço de envio de e-mail (SendGrid)
+/// <summary>
+/// Regista o serviço de envio de email (SendGrid).
+/// </summary>
 builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
 
-// Cookie de login personalizado
+/// <summary>
+/// Configura cookie de autenticação com caminho de login personalizado.
+/// </summary>
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
@@ -58,7 +74,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// Middleware ambiente
+/// <summary>
+/// Configura middleware dependendo do ambiente.
+/// </summary>
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -69,7 +87,9 @@ else
     app.UseHsts();
 }
 
-// Middlewares essenciais
+/// <summary>
+/// Configura middlewares essenciais para segurança, estáticos, autenticação e sessão.
+/// </summary>
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -77,27 +97,40 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Mapeia API controllers
+/// <summary>
+/// Mapeia rotas para controllers API.
+/// </summary>
 app.MapControllers();
 
-// Rota MVC principal
+/// <summary>
+/// Configura rota padrão do MVC.
+/// </summary>
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Razor Pages (Identity)
+/// <summary>
+/// Mapeia Razor Pages, usadas para Identity.
+/// </summary>
 app.MapRazorPages();
 
-// Cultura default
+/// <summary>
+/// Define cultura padrão para o sistema.
+/// </summary>
 var cultureInfo = new CultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-// Seed dos dados iniciais
+/// <summary>
+/// Executa seed inicial da base de dados.
+/// </summary>
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await SeedData.InicializarAsync(services);
 }
 
+/// <summary>
+/// Executa a aplicação.
+/// </summary>
 app.Run();

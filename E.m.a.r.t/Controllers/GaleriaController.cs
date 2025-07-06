@@ -5,6 +5,7 @@ using E.m.a.r.t.Models;
 
 public class GaleriaController : Controller
 {
+   
     private readonly ApplicationDbContext _context;
 
     public GaleriaController(ApplicationDbContext context)
@@ -12,12 +13,20 @@ public class GaleriaController : Controller
         _context = context;
     }
 
+    /// <summary>
+    /// Página principal da galeria, exibindo todas as coleções e fotografias.
+    /// </summary>
+    /// <returns></returns>
     public IActionResult Index()
     {
         var colecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList();
         return View(colecoes);
     }
 
+    /// <summary>
+    /// Página principal da loja, exibindo coleções e fotografias sem coleção.
+    /// </summary>
+    /// <returns></returns>
     public IActionResult Loja()
     {
         var colecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList();
@@ -32,6 +41,11 @@ public class GaleriaController : Controller
         return View(vm);
     }
 
+    /// <summary>
+    /// Detalhes de uma fotografia específica.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public IActionResult Details(int id)
     {
         var foto = _context.Fotografias.FirstOrDefault(f => f.Id == id);

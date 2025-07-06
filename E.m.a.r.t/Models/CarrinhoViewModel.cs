@@ -1,10 +1,25 @@
 ﻿namespace E.m.a.r.t.Models
 {
-    // ViewModel para representar o carrinho de compras na aplicação
+    /// <summary>
+    /// ViewModel que representa o carrinho de compras na aplicação.
+    /// Contém os dados do utilizador e as fotografias selecionadas.
+    /// </summary>
     public class CarrinhoViewModel
     {
-        public string Nome { get; set; }  // Nome do utilizador
-        public string NIF { get; set; }   // Número de identificação fiscal do utilizador
-        public List<Fotografias> Fotografias { get; set; } = new(); // Lista de fotografias no carrinho, inicializada vazia
+        /// <summary>
+        /// Nome do utilizador associado ao carrinho.
+        /// </summary>
+        public string Nome { get; set; }
+
+        /// <summary>
+        /// Número de Identificação Fiscal (NIF) do utilizador.
+        /// </summary>
+        public string NIF { get; set; }
+
+        /// <summary>
+        /// Lista das fotografias presentes no carrinho.
+        /// Inicializada vazia para evitar null reference.
+        /// </summary>
+        public List<Fotografias> Fotografias { get; set; } = new();
     }
 }

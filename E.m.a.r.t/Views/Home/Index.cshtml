@@ -1,66 +1,66 @@
-﻿@model IEnumerable<E.m.a.r.t.Models.Colecao> // O modelo é uma coleção de objetos 'Colecao'
+﻿@model IEnumerable<E.m.a.r.t.Models.Colecao> // Modelo: coleção de objetos Colecao
 
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers // Permite usar os Tag Helpers do ASP.NET Core
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers // Habilita Tag Helpers do ASP.NET Core
 
 @{
-    Layout = "_Layout"; // Define o layout base da página
-    ViewData["Title"] = "Página Inicial"; // Define o título da aba/navegador
+    Layout = "_Layout"; // Define layout base
+    ViewData["Title"] = "Página Inicial"; // Define título da página
 }
 
-<!-- Importa o CSS do Swiper (carrossel de imagens) e o CSS personalizado -->
+<!-- Importação CSS do Swiper (carrossel) e CSS personalizado -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <link rel="stylesheet" href="~/css/Index.css" />
 
 <main class="grid">
-    @foreach (var colecao in Model) // Percorre cada coleção recebida no modelo
+    @foreach (var colecao in Model) // Para cada coleção
     {
-        var fotos = colecao.ListaFotografias.Take(3).ToList(); // Seleciona até 3 fotografias da coleção
+        var fotos = colecao.ListaFotografias.Take(3).ToList(); // Pega até 3 fotos
 
-        if (fotos.Count == 0) continue; // Se não houver fotos, passa para a próxima coleção
+        if (fotos.Count == 0) continue; // Se não houver fotos, pula para próxima coleção
 
         <div class="card">
-            <!-- Carrossel de imagens Swiper -->
+            <!-- Carrossel Swiper -->
             <div class="swiper card-swiper">
                 <div class="swiper-wrapper">
-                    @foreach (var foto in fotos) // Adiciona cada foto como um slide do carrossel
+                    @foreach (var foto in fotos) // Cada foto é um slide
                     {
                         <div class="swiper-slide">
                             <img src="~/imagens/@foto.Ficheiro" alt="@foto.Titulo" />
                         </div>
                     }
                 </div>
-                <div class="swiper-pagination"></div> <!-- Elemento para os pontos de paginação -->
+                <div class="swiper-pagination"></div> <!-- Pontos de paginação -->
             </div>
 
-            <!-- Conteúdo textual do card -->
+            <!-- Conteúdo do cartão -->
             <div class="card-content">
                 <h2>@colecao.Nome</h2> <!-- Nome da coleção -->
                 <p>@colecao.Descricao</p> <!-- Descrição da coleção -->
-                <a href="@Url.Action("Loja", "Home")" class="btn">Ver</a> <!-- Link para ver mais -->
+                <a href="@Url.Action("Loja", "Home")" class="btn">Ver</a> <!-- Link para loja -->
             </div>
         </div>
     }
 </main>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" /> <!-- Inclui scripts de validação, se forem necessários -->
-    <!-- Importa o JS do Swiper -->
+    <partial name="_ValidationScriptsPartial" /> <!-- Scripts de validação -->
+    <!-- Importa JS do Swiper -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
-        // Inicializa todos os carrosseis Swiper quando a página carregar
+        // Inicializa carrosseis Swiper na página
         window.onload = function () {
             const swipers = document.querySelectorAll('.card-swiper');
             swipers.forEach(swiperEl => {
                 new Swiper(swiperEl, {
-                    loop: true, // Permite rotação infinita das imagens
+                    loop: true, // Loop infinito
                     autoplay: {
-                        delay: 3000, // Intervalo de 3 segundos
-                        disableOnInteraction: false // Não interrompe o autoplay ao clicar
+                        delay: 3000, // 3 segundos
+                        disableOnInteraction: false // Continua autoplay mesmo após interação
                     },
                     pagination: {
                         el: swiperEl.querySelector('.swiper-pagination'),
-                        clickable: true // Permite navegar entre slides pelos pontos
+                        clickable: true // Navegação pelos pontos
                     }
                 });
             });

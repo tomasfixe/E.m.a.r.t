@@ -16,8 +16,10 @@ namespace E.m.a.r.t.Controllers
             _context = context;
         }
 
-        // GET: api/ComprasApi
-        // Devolve a lista de todas as compras (com os dados do comprador)
+        /// <summary>
+        /// Devolve todas as compras, incluindo dados do comprador e fotografias compradas
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Compras>>> GetCompras()
         {
@@ -27,8 +29,11 @@ namespace E.m.a.r.t.Controllers
                 .ToListAsync();
         }
 
-        // GET: api/ComprasApi/5
-        // Devolve uma compra específica por ID
+        /// <summary>
+        /// Devolve uma compra específica pelo ID, com dados completos
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Compras>> GetCompras(int id)
         {
@@ -43,8 +48,11 @@ namespace E.m.a.r.t.Controllers
             return compra;
         }
 
-        // POST: api/ComprasApi
-        // Cria uma nova compra
+        /// <summary>
+        /// Cria uma nova compra e guarda no banco de dados
+        /// </summary>
+        /// <param name="compra"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<Compras>> PostCompras(Compras compra)
         {
@@ -54,8 +62,12 @@ namespace E.m.a.r.t.Controllers
             return CreatedAtAction(nameof(GetCompras), new { id = compra.Id }, compra);
         }
 
-        // PUT: api/ComprasApi/5
-        // Atualiza uma compra existente
+        /// <summary>
+        /// Atualiza uma compra existente com base no ID e dados fornecidos
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="compra"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCompras(int id, Compras compra)
         {
@@ -79,8 +91,11 @@ namespace E.m.a.r.t.Controllers
             return NoContent();
         }
 
-        // DELETE: api/ComprasApi/5
-        // Apaga uma compra existente
+        /// <summary>
+        /// Apaga uma compra pelo ID, se existir
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompras(int id)
         {
@@ -94,7 +109,11 @@ namespace E.m.a.r.t.Controllers
             return NoContent();
         }
 
-        // Verifica se uma compra existe por ID
+        /// <summary>
+        /// Verifica se uma compra existe com base no ID fornecido.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private bool CompraExists(int id)
         {
             return _context.Compras.Any(e => e.Id == id);

@@ -10,6 +10,7 @@
 
 <h2>Upload de Fotografias</h2>
 
+@* Formulário para adicionar nova fotografia: título, descrição, data, preço, coleção e ficheiro de imagem *@
 <form asp-action="Upload" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label>Título</label>
@@ -48,6 +49,7 @@
 
 <h3>Criar Nova Coleção</h3>
 
+@* Formulário para criar nova coleção, associando fotografias existentes via checkboxes *@
 <form asp-action="CriarColecao" method="post">
     @Html.AntiForgeryToken()
 
@@ -71,7 +73,7 @@
 
     <button type="submit" class="btn btn-secondary">Criar Coleção</button>
 
-    @* Mostra erros de validação *@
+    @* Exibe mensagens de erro de validação, se existirem *@
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="text-danger mt-2">
@@ -84,6 +86,8 @@
 </form>
 
 <h3>Fotografias Existentes</h3>
+
+@* Tabela que lista todas as fotografias com opções para editar e apagar *@
 @if (listaFotos.Any())
 {
     <table class="table table-striped">
@@ -103,16 +107,16 @@
             {
                 <tr>
                     <form asp-action="EditarFotografia" method="post">
-                        <td><img src="~/imagens/@foto.Ficheiro" width="100" /></td>
-                        <td>
-                            <input type="hidden" name="Id" value="@foto.Id" />
-                            <input name="Titulo" class="form-control" value="@foto.Titulo" />
-                        </td>
-                        <td>@foto.Data.ToShortDateString()</td>
-                        <td>
-                            <input name="Preco" class="form-control" type="number" step="0.01" value="@foto.Preco" />
-                        </td>
-                        <td>
+                    <td><img src="~/imagens/@foto.Ficheiro" width="100" /></td>
+                    <td>
+                        <input type="hidden" name="Id" value="@foto.Id" />
+                        <input name="Titulo" class="form-control" value="@foto.Titulo" />
+                    </td>
+                    <td>@foto.Data.ToShortDateString()</td>
+                    <td>
+                        <input name="Preco" class="form-control" type="number" step="0.01" value="@foto.Preco" />
+                    </td>
+                    <td>
                         <select name="ColecaoFK" class="form-control">
                             <option value="">Sem coleção</option>
                                 @foreach (var col in colecoes)
@@ -122,17 +126,17 @@
                                 </option>
                                 }
                         </select>
-                        </td>
-                        <td>
-                            <input name="Descricao" class="form-control" value="@foto.Descricao" />
-                        </td>
-                        <td>
-                            <button type="submit" class="btn btn-sm btn-success mt-2">Guardar</button>
-                            <form asp-action="Delete" method="post" style="display:inline;">
-                                <input type="hidden" name="id" value="@foto.Id" />
-                                <button class="btn btn-danger btn-sm mt-2" type="submit">Apagar</button>
-                            </form>
-                        </td>
+                    </td>
+                    <td>
+                        <input name="Descricao" class="form-control" value="@foto.Descricao" />
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-sm btn-success mt-2">Guardar</button>
+                        <form asp-action="Delete" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@foto.Id" />
+                            <button class="btn btn-danger btn-sm mt-2" type="submit">Apagar</button>
+                        </form>
+                    </td>
                     </form>
                 </tr>
             }
@@ -140,9 +144,9 @@
     </table>
 }
 
-
 <h3>Coleções Existentes</h3>
 
+@* Tabela que lista coleções existentes com botão para eliminar *@
 @if (colecoes != null && colecoes.Any())
 {
     <table class="table table-striped">
@@ -176,4 +180,3 @@ else
 }
 
 <hr />
-
