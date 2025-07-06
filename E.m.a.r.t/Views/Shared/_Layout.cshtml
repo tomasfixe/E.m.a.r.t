@@ -51,7 +51,7 @@
                     <ul class="navbar-nav flex-grow-1">
                         <!-- Link para página Loja -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Loja">Loja</a>
+                            <a class="nav-link text-dark" asp-controller="Galeria" asp-action="Loja">Loja</a>
                         </li>
 
                         <!-- Link para página Sobre (Privacy) -->
@@ -68,14 +68,14 @@
                             if (roles.Contains("Admin")) // Se o usuário for Admin
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Home" asp-action="Upload">Upload</a>
+                                    <a class="nav-link text-dark" asp-controller="Admin" asp-action="Upload">Upload</a>
                                 </li>
                             }
                         }
 
                         <!-- Link para página Checkout -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Checkout">Checkout</a>
+                            <a class="nav-link text-dark" asp-controller="Carrinho" asp-action="Checkout">Checkout</a>
                         </li>
 
                         <!-- Controle de tema claro/escuro com um switch -->
