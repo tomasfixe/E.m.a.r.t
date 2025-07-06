@@ -46,6 +46,29 @@
 
 <hr />
 
+<h3>Criar Nova Coleção</h3>
+
+<form asp-action="CriarColecao" method="post">
+    <div class="form-group">
+        <label>Nome da Coleção</label>
+        <input asp-for="Item2.Nome" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Descrição</label>
+        <textarea asp-for="Item2.Descricao" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Fotos da Coleção (selecione ao menos uma)</label>
+        @foreach (var foto in (List<Fotografias>)ViewBag.ListaFotos)
+        {
+            <div>
+                <input type="checkbox" name="ListaFotografiasIds" value="@foto.Id" /> @foto.Titulo
+            </div>
+        }
+    </div>
+    <button type="submit" class="btn btn-secondary">Criar Coleção</button>
+</form>
+
 <h3>Fotografias Existentes</h3>
 
 @if (listaFotos.Any())
@@ -88,16 +111,39 @@ else
 
 <hr />
 
-<h3>Criar Nova Coleção</h3>
+<h3>Coleções Existentes</h3>
 
-<form asp-action="CriarColecao" method="post">
-    <div class="form-group">
-        <label>Nome da Coleção</label>
-        <input asp-for="Item2.Nome" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Descrição</label>
-        <textarea asp-for="Item2.Descricao" class="form-control"></textarea>
-    </div>
-    <button type="submit" class="btn btn-secondary">Criar Coleção</button>
-</form>
+@if (colecoes != null && colecoes.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var colecao in colecoes)
+            {
+                <tr>
+                    <td>@colecao.Nome</td>
+                    <td>@colecao.Descricao</td>
+                    <td>
+                        <form asp-action="EliminarColecao" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@colecao.Id" />
+                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Tem a certeza que deseja eliminar esta coleção?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Sem coleções ainda.</p>
+}
+
+<hr />
+

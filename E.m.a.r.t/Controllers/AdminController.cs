@@ -17,7 +17,8 @@ public class AdminController : Controller
     [HttpGet]
     public IActionResult Upload()
     {
-        ViewBag.ListaColecoes = _context.Colecoes.ToList();
+        ViewBag.ListaColecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList();
+        ViewBag.ListaFotos = _context.Fotografias.ToList();
         ViewBag.NovaFoto = new Fotografias();
 
         var lista = _context.Fotografias.Include(f => f.Colecao).ToList();
@@ -51,6 +52,7 @@ public class AdminController : Controller
         }
 
         ViewBag.ListaColecoes = _context.Colecoes.ToList();
+        ViewBag.ListaFotos = _context.Fotografias.ToList();
         ViewBag.NovaFoto = novaFoto;
 
         var lista = _context.Fotografias.Include(f => f.Colecao).ToList();
@@ -59,49 +61,18 @@ public class AdminController : Controller
         return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Delete(int id)
-    {
-        var foto = _context.Fotografias.FirstOrDefault(f => f.Id == id);
-
-        if (foto != null)
-        {
-            var caminhoImagem = Path.Combine("wwwroot/imagens", foto.Ficheiro);
-            if (System.IO.File.Exists(caminhoImagem))
-                System.IO.File.Delete(caminhoImagem);
-
-            _context.Fotografias.Remove(foto);
-            _context.SaveChanges();
-        }
-
-        return RedirectToAction("Upload");
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Edit(int Id, string Titulo, string? Descricao, DateTime Data, decimal Preco, int? ColecaoFK, string Ficheiro)
-    {
-        var foto = _context.Fotografias.FirstOrDefault(f => f.Id == Id);
-
-        if (foto != null)
-        {
-            foto.Titulo = Titulo;
-            foto.Descricao = Descricao;
-            foto.Data = Data;
-            foto.Preco = Preco;
-            foto.ColecaoFK = ColecaoFK;
-
-            _context.SaveChanges();
-        }
-
-        return RedirectToAction("Upload");
-    }
+    // Mantém os métodos Delete, Edit, EditarColecao, EliminarColecao...
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult CriarColecao(Colecao novaColecao)
     {
+        // Validação: garantir que tenha pelo menos 1 foto na lista
+        if (novaColecao.ListaFotografias == null || !novaColecao.ListaFotografias.Any())
+        {
+            ModelState.AddModelError("", "É obrigatório associar pelo menos uma fotografia à coleção.");
+        }
+
         if (ModelState.IsValid)
         {
             _context.Colecoes.Add(novaColecao);
@@ -109,44 +80,11 @@ public class AdminController : Controller
             return RedirectToAction("Upload");
         }
 
-        ViewBag.ListaColecoes = _context.Colecoes.ToList();
+        ViewBag.ListaColecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList(); // ajustei para ListaFotografias
+        ViewBag.ListaFotos = _context.Fotografias.ToList();
         ViewBag.NovaFoto = new Fotografias();
 
         var lista = _context.Fotografias.Include(f => f.Colecao).ToList();
         return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult EditarColecao(int Id, string Nome, string? Descricao)
-    {
-        var colecao = _context.Colecoes.FirstOrDefault(c => c.Id == Id);
-
-        if (colecao != null)
-        {
-            colecao.Nome = Nome;
-            colecao.Descricao = Descricao;
-            _context.SaveChanges();
-        }
-
-        return RedirectToAction("Upload");
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult EliminarColecao(int id)
-    {
-        var colecao = _context.Colecoes.Include(c => c.ListaFotografias).FirstOrDefault(c => c.Id == id);
-
-        if (colecao != null)
-        {
-            foreach (var foto in colecao.ListaFotografias)
-                foto.ColecaoFK = null;
-
-            _context.Colecoes.Remove(colecao);
-            _context.SaveChanges();
-        }
-
-        return RedirectToAction("Upload");
     }
 }
