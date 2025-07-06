@@ -4,6 +4,7 @@ using E.m.a.r.t.Data;
 using System.Globalization;
 using E.m.a.r.t.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,16 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // EF Core com SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+// Configura controllers com JSON serialização que ignora ciclos
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+    {
+        // Ignora qualquer ciclo de referência em objetos
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        // Opcional: produz JSON com identação
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 
 // Páginas de erro detalhadas (dev only)
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -32,12 +43,11 @@ builder.Services
 
 // Razor Pages + MVC
 builder.Services.AddRazorPages();
-builder.Services.AddControllersWithViews();
 
 // Sessões
 builder.Services.AddSession();
 
-// Serviço de envio de e-mail (exemplo: SendGrid)
+// Serviço de envio de e-mail (SendGrid)
 builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
 
 // Cookie de login personalizado
@@ -46,7 +56,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Identity/Account/Login";
 });
 
-// Construção da aplicação
 var app = builder.Build();
 
 // Middleware ambiente
@@ -64,10 +73,12 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.MapControllers();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Mapeia API controllers
+app.MapControllers();
 
 // Rota MVC principal
 app.MapControllerRoute(
@@ -89,5 +100,4 @@ using (var scope = app.Services.CreateScope())
     await SeedData.InicializarAsync(services);
 }
 
-// Início da app
 app.Run();

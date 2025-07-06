@@ -50,9 +50,8 @@ namespace E.m.a.r.t.Models
         public string UserName { get; set; } = string.Empty;
 
         // Coleção de fotografias associadas ao utilizador
-        public ICollection<Fotografias> ListaFotos { get; set; } = [];
+        public ICollection<Fotografias> ListaFotos { get; set; } = new List<Fotografias>();
 
-        // Coleção de compras efetuadas pelo utilizador
-        public ICollection<Compras> ListaCompras { get; set; } = [];
+        public ICollection<Compras> ListaCompras { get; set; } = new List<Compras>();
     }
 }
