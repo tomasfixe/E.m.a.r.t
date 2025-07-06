@@ -84,7 +84,6 @@
 </form>
 
 <h3>Fotografias Existentes</h3>
-
 @if (listaFotos.Any())
 {
     <table class="table table-striped">
@@ -95,6 +94,7 @@
                 <th>Data</th>
                 <th>Preço</th>
                 <th>Coleção</th>
+                <th>Descrição</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -102,28 +102,44 @@
             @foreach (var foto in listaFotos)
             {
                 <tr>
-                    <td><img src="~/imagens/@foto.Ficheiro" width="100" /></td>
-                    <td>@foto.Titulo</td>
-                    <td>@foto.Data.ToShortDateString()</td>
-                    <td>@foto.Preco.ToString("C")</td>
-                    <td>@(foto.Colecao?.Nome ?? "Sem coleção")</td>
-                    <td>
-                        <form asp-action="Delete" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@foto.Id" />
-                            <button class="btn btn-danger btn-sm" type="submit">Apagar</button>
-                        </form>
-                    </td>
+                    <form asp-action="EditarFotografia" method="post">
+                        <td><img src="~/imagens/@foto.Ficheiro" width="100" /></td>
+                        <td>
+                            <input type="hidden" name="Id" value="@foto.Id" />
+                            <input name="Titulo" class="form-control" value="@foto.Titulo" />
+                        </td>
+                        <td>@foto.Data.ToShortDateString()</td>
+                        <td>
+                            <input name="Preco" class="form-control" type="number" step="0.01" value="@foto.Preco" />
+                        </td>
+                        <td>
+                        <select name="ColecaoFK" class="form-control">
+                            <option value="">Sem coleção</option>
+                                @foreach (var col in colecoes)
+                                {
+                                <option value="@col.Id" selected="@(foto.ColecaoFK == col.Id ? "selected" : null)">
+                                        @col.Nome
+                                </option>
+                                }
+                        </select>
+                        </td>
+                        <td>
+                            <input name="Descricao" class="form-control" value="@foto.Descricao" />
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-sm btn-success mt-2">Guardar</button>
+                            <form asp-action="Delete" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@foto.Id" />
+                                <button class="btn btn-danger btn-sm mt-2" type="submit">Apagar</button>
+                            </form>
+                        </td>
+                    </form>
                 </tr>
             }
         </tbody>
     </table>
 }
-else
-{
-    <p>Sem fotografias ainda.</p>
-}
 
-<hr />
 
 <h3>Coleções Existentes</h3>
 

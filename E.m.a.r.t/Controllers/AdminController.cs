@@ -61,6 +61,39 @@ public class AdminController : Controller
         return View(Tuple.Create(lista.AsEnumerable(), novaColecao));
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult EditarFotografia(Fotografias fotografiaAtualizada)
+    {
+        if (ModelState.IsValid)
+        {
+            var fotografiaExistente = _context.Fotografias.FirstOrDefault(f => f.Id == fotografiaAtualizada.Id);
+            if (fotografiaExistente == null)
+            {
+                return NotFound();
+            }
+
+            fotografiaExistente.Titulo = fotografiaAtualizada.Titulo;
+            fotografiaExistente.Descricao = fotografiaAtualizada.Descricao;
+            fotografiaExistente.Preco = fotografiaAtualizada.Preco;
+            fotografiaExistente.ColecaoFK = fotografiaAtualizada.ColecaoFK;
+
+            _context.SaveChanges();
+            return RedirectToAction("Upload");
+        }
+
+        // Se houver erro, recarrega os dados
+        ViewBag.ListaColecoes = _context.Colecoes.Include(c => c.ListaFotografias).ToList();
+        ViewBag.ListaFotos = _context.Fotografias.Include(f => f.Colecao).ToList();
+        ViewBag.NovaFoto = new Fotografias();
+
+        var lista = _context.Fotografias.Include(f => f.Colecao).ToList();
+        var novaColecao = new Colecao();
+
+        return View("Upload", Tuple.Create(lista.AsEnumerable(), novaColecao));
+    }
+
+
     // Mantém os métodos Delete, Edit, EditarColecao, EliminarColecao...
     [HttpPost]
     [ValidateAntiForgeryToken]
