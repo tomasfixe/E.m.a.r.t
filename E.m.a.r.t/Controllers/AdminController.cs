@@ -184,4 +184,33 @@ public class AdminController : Controller
 
         return RedirectToAction("Upload");
     }
+
+    /// <summary>
+    /// Método para apagar uma fotografia específica.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult ApagarFotografia(int id)
+    {
+        var foto = _context.Fotografias.FirstOrDefault(f => f.Id == id);
+        if (foto == null)
+        {
+            return NotFound();
+        }
+
+        // Apagar o ficheiro físico (opcional)
+        var caminho = Path.Combine("wwwroot/imagens", foto.Ficheiro);
+        if (System.IO.File.Exists(caminho))
+        {
+            System.IO.File.Delete(caminho);
+        }
+
+        _context.Fotografias.Remove(foto);
+        _context.SaveChanges();
+
+        return RedirectToAction("Upload");
+    }
+
 }

@@ -5,7 +5,7 @@
     var listaFotos = Model.Item1;
     var novaColecao = Model.Item2;
     var colecoes = ViewBag.ListaColecoes as List<Colecao>;
-    var novaFoto = ViewBag.NovaFoto as Fotografias;
+    var novaFoto = ViewBag.NovaFoto as Fotografias ?? new Fotografias();
 }
 
 <h2>Upload de Fotografias</h2>
@@ -33,13 +33,14 @@
 
     <div class="form-group">
         <label asp-for="@novaFoto.Preco"></label>
-        <input asp-for="@novaFoto.Preco" type="number" step="0.01" class="form-control" />
+        <input asp-for="@novaFoto.Preco" class="form-control" step="0.01" />
         <span asp-validation-for="@novaFoto.Preco" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="@novaFoto.ColecaoFK"></label>
-        <select asp-for="@novaFoto.ColecaoFK" class="form-control" asp-items="@(new SelectList(colecoes, "Id", "Nome"))">
+        <label asp-for="@novaFoto.ColecaoFK">Coleção</label>
+        <select asp-for="@novaFoto.ColecaoFK" class="form-control"
+                asp-items="@(new SelectList(colecoes, "Id", "Nome", novaFoto.ColecaoFK))">
             <option value="">Sem coleção</option>
         </select>
         <span asp-validation-for="@novaFoto.ColecaoFK" class="text-danger"></span>
@@ -48,20 +49,20 @@
     <div class="form-group">
         <label>Imagem</label>
         <input type="file" name="imagem" class="form-control-file" />
-        @if (ViewData.ModelState["imagem"]?.Errors.Count > 0)
+        @if (ViewData.ModelState.ContainsKey("imagem"))
         {
-            <span class="text-danger">@ViewData.ModelState["imagem"].Errors[0].ErrorMessage</span>
+            <span class="text-danger">@ViewData.ModelState["imagem"].Errors.FirstOrDefault()?.ErrorMessage</span>
         }
     </div>
 
     <button type="submit" class="btn btn-primary">Adicionar</button>
 </form>
 
+
 <hr />
 
 <h3>Criar Nova Coleção</h3>
 
-@* Formulário para criar nova coleção, associando fotografias existentes via checkboxes *@
 <form asp-action="CriarColecao" method="post">
     @Html.AntiForgeryToken()
 
@@ -85,7 +86,7 @@
 
     <button type="submit" class="btn btn-secondary">Criar Coleção</button>
 
-    @* Exibe mensagens de erro de validação, se existirem *@
+    @* Mostra erros de validação *@
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="text-danger mt-2">
@@ -98,8 +99,6 @@
 </form>
 
 <h3>Fotografias Existentes</h3>
-
-@* Tabela que lista todas as fotografias com opções para editar e apagar *@
 @if (listaFotos.Any())
 {
     <table class="table table-striped">
@@ -119,16 +118,16 @@
             {
                 <tr>
                     <form asp-action="EditarFotografia" method="post">
-                    <td><img src="~/imagens/@foto.Ficheiro" width="100" /></td>
-                    <td>
-                        <input type="hidden" name="Id" value="@foto.Id" />
-                        <input name="Titulo" class="form-control" value="@foto.Titulo" />
-                    </td>
-                    <td>@foto.Data.ToShortDateString()</td>
-                    <td>
-                        <input name="Preco" class="form-control" type="number" step="0.01" value="@foto.Preco" />
-                    </td>
-                    <td>
+                        <td><img src="~/imagens/@foto.Ficheiro" width="100" /></td>
+                        <td>
+                            <input type="hidden" name="Id" value="@foto.Id" />
+                            <input name="Titulo" class="form-control" value="@foto.Titulo" />
+                        </td>
+                        <td>@foto.Data.ToShortDateString()</td>
+                        <td>
+                            <input name="Preco" class="form-control" type="number" step="0.01" value="@foto.Preco" />
+                        </td>
+                        <td>
                         <select name="ColecaoFK" class="form-control">
                             <option value="">Sem coleção</option>
                                 @foreach (var col in colecoes)
@@ -138,17 +137,17 @@
                                 </option>
                                 }
                         </select>
-                    </td>
-                    <td>
-                        <input name="Descricao" class="form-control" value="@foto.Descricao" />
-                    </td>
-                    <td>
-                        <button type="submit" class="btn btn-sm btn-success mt-2">Guardar</button>
-                        <form asp-action="Delete" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@foto.Id" />
-                            <button class="btn btn-danger btn-sm mt-2" type="submit">Apagar</button>
-                        </form>
-                    </td>
+                        </td>
+                        <td>
+                            <input name="Descricao" class="form-control" value="@foto.Descricao" />
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-sm btn-success mt-2">Guardar</button>
+                            <form asp-action="Delete" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@foto.Id" />
+                                <button class="btn btn-danger btn-sm mt-2" type="submit">Apagar</button>
+                            </form>
+                        </td>
                     </form>
                 </tr>
             }
@@ -156,9 +155,9 @@
     </table>
 }
 
+
 <h3>Coleções Existentes</h3>
 
-@* Tabela que lista coleções existentes com botão para eliminar *@
 @if (colecoes != null && colecoes.Any())
 {
     <table class="table table-striped">
@@ -192,3 +191,4 @@ else
 }
 
 <hr />
+
