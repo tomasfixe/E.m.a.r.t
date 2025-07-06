@@ -41,26 +41,30 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Upload(Fotografias novaFoto, IFormFile imagem)
     {
+        if (imagem == null || imagem.Length == 0)
+        {
+            ModelState.AddModelError("imagem", "O ficheiro da imagem é obrigatório.");
+        }
+
         if (ModelState.IsValid)
         {
-            if (imagem != null && imagem.Length > 0)
+            var nomeFicheiro = Guid.NewGuid().ToString() + Path.GetExtension(imagem.FileName);
+            var caminho = Path.Combine("wwwroot/imagens", nomeFicheiro);
+
+            using (var stream = new FileStream(caminho, FileMode.Create))
             {
-                var nomeFicheiro = Guid.NewGuid().ToString() + Path.GetExtension(imagem.FileName);
-                var caminho = Path.Combine("wwwroot/imagens", nomeFicheiro);
-
-                using (var stream = new FileStream(caminho, FileMode.Create))
-                {
-                    imagem.CopyTo(stream);
-                }
-
-                novaFoto.Ficheiro = nomeFicheiro;
+                imagem.CopyTo(stream);
             }
+
+            novaFoto.Ficheiro = nomeFicheiro;
 
             _context.Fotografias.Add(novaFoto);
             _context.SaveChanges();
+
             return RedirectToAction("Upload");
         }
 
+        // Se chegar aqui, há erros — recarregar view com dados
         ViewBag.ListaColecoes = _context.Colecoes.ToList();
         ViewBag.ListaFotos = _context.Fotografias.ToList();
         ViewBag.NovaFoto = novaFoto;

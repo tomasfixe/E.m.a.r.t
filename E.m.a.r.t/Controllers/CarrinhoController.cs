@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using E.m.a.r.t.Data;
 using E.m.a.r.t.Models;
-using Emart.Helpers;
+using E.m.a.r.t.Helpers;
+using E.m.a.r.t.Helpers;
 
 public class CarrinhoController : Controller
 {
@@ -23,6 +24,7 @@ public class CarrinhoController : Controller
     {
         var utilizador = _context.Utilizadores.FirstOrDefault(u => u.UserName == User.Identity.Name);
         var fotosCarrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
+
 
         var model = new CarrinhoViewModel
         {

@@ -10,38 +10,50 @@
 
 <h2>Upload de Fotografias</h2>
 
-@* Formulário para adicionar nova fotografia: título, descrição, data, preço, coleção e ficheiro de imagem *@
 <form asp-action="Upload" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
     <div class="form-group">
-        <label>Título</label>
-        <input asp-for="Item2.Nome" class="form-control" name="Titulo" />
+        <label asp-for="@novaFoto.Titulo"></label>
+        <input asp-for="@novaFoto.Titulo" class="form-control" />
+        <span asp-validation-for="@novaFoto.Titulo" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label>Descrição</label>
-        <textarea asp-for="Item2.Descricao" class="form-control" name="Descricao"></textarea>
+        <label asp-for="@novaFoto.Descricao"></label>
+        <textarea asp-for="@novaFoto.Descricao" class="form-control"></textarea>
+        <span asp-validation-for="@novaFoto.Descricao" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label>Data</label>
-        <input type="date" class="form-control" name="Data" />
+        <label asp-for="@novaFoto.Data"></label>
+        <input asp-for="@novaFoto.Data" type="date" class="form-control" />
+        <span asp-validation-for="@novaFoto.Data" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label>Preço</label>
-        <input type="number" step="0.01" class="form-control" name="Preco" />
+        <label asp-for="@novaFoto.Preco"></label>
+        <input asp-for="@novaFoto.Preco" type="number" step="0.01" class="form-control" />
+        <span asp-validation-for="@novaFoto.Preco" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label>Coleção</label>
-        <select name="ColecaoFK" class="form-control">
+        <label asp-for="@novaFoto.ColecaoFK"></label>
+        <select asp-for="@novaFoto.ColecaoFK" class="form-control" asp-items="@(new SelectList(colecoes, "Id", "Nome"))">
             <option value="">Sem coleção</option>
-            @foreach (var col in colecoes)
-            {
-                <option value="@col.Id">@col.Nome</option>
-            }
         </select>
+        <span asp-validation-for="@novaFoto.ColecaoFK" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label>Imagem</label>
         <input type="file" name="imagem" class="form-control-file" />
+        @if (ViewData.ModelState["imagem"]?.Errors.Count > 0)
+        {
+            <span class="text-danger">@ViewData.ModelState["imagem"].Errors[0].ErrorMessage</span>
+        }
     </div>
+
     <button type="submit" class="btn btn-primary">Adicionar</button>
 </form>
 
