@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using E.m.a.r.t.Data;
 using E.m.a.r.t.Models;
 using E.m.a.r.t.Helpers;
-using E.m.a.r.t.Helpers;
 
 public class CarrinhoController : Controller
 {
@@ -15,16 +14,11 @@ public class CarrinhoController : Controller
         _context = context;
     }
 
-    /// <summary>
-    /// Página de checkout do carrinho de compras.
-    /// </summary>
-    /// <returns></returns>
     [Authorize]
     public IActionResult Checkout()
     {
         var utilizador = _context.Utilizadores.FirstOrDefault(u => u.UserName == User.Identity.Name);
         var fotosCarrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
-
 
         var model = new CarrinhoViewModel
         {
@@ -46,36 +40,12 @@ public class CarrinhoController : Controller
         return View(model);
     }
 
-    /// <summary>
-    /// Finaliza a compra do carrinho, removendo fotografias selecionadas ou finalizando a compra.
-    /// </summary>
-    /// <param name="model"></param>
-    /// <param name="removerId"></param>
-    /// <returns></returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize]
-    public IActionResult FinalizarCompra(CarrinhoViewModel model, int? removerId)
+    public IActionResult FinalizarCompra(CarrinhoViewModel model)
     {
         var carrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
-
-        if (removerId.HasValue)
-        {
-            var fotoARemover = carrinho.FirstOrDefault(f => f.Id == removerId.Value);
-            if (fotoARemover != null)
-            {
-                carrinho.Remove(fotoARemover);
-                HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
-            }
-
-            return View("Checkout", new CarrinhoViewModel
-            {
-                Nome = model.Nome,
-                NIF = model.NIF,
-                Fotografias = carrinho
-            });
-        }
-
         var utilizador = _context.Utilizadores.FirstOrDefault(u => u.UserName == User.Identity.Name);
 
         if (utilizador != null && carrinho.Any())
@@ -118,11 +88,23 @@ public class CarrinhoController : Controller
         });
     }
 
-    /// <summary>
-    /// Adiciona uma fotografia ao carrinho de compras.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize]
+    public IActionResult RemoverDoCarrinho(int id)
+    {
+        var carrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
+
+        var fotoARemover = carrinho.FirstOrDefault(f => f.Id == id);
+        if (fotoARemover != null)
+        {
+            carrinho.Remove(fotoARemover);
+            HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
+        }
+
+        return RedirectToAction("Checkout");
+    }
+
     [HttpPost]
     public IActionResult Adicionar(int id)
     {
