@@ -8,21 +8,15 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-/// <summary>
-/// Obtem a string de conexão à base de dados.
-/// </summary>
+// Obtem a string de conexão à base de dados.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-/// <summary>
-/// Configura o contexto da base de dados usando SQL Server.
-/// </summary>
+// Configura o contexto da base de dados usando SQL Server.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-/// <summary>
-/// Adiciona suporte a controllers e configura JSON para ignorar ciclos de referência.
-/// </summary>
+// Adiciona suporte a controllers e configura JSON para ignorar ciclos de referência.
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
@@ -30,14 +24,10 @@ builder.Services.AddControllersWithViews()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
-/// <summary>
-/// Adiciona páginas de erro detalhadas em ambiente de desenvolvimento.
-/// </summary>
+// Adiciona páginas de erro detalhadas em ambiente de desenvolvimento.
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-/// <summary>
-/// Configura Identity com suporte a roles e regras de password.
-/// </summary>
+// Configura Identity com suporte a roles e regras de password.
 builder.Services
     .AddIdentity<IdentityUser, IdentityRole>(options =>
     {
@@ -49,24 +39,16 @@ builder.Services
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-/// <summary>
-/// Adiciona suporte a Razor Pages e MVC.
-/// </summary>
+// Adiciona suporte a Razor Pages e MVC.
 builder.Services.AddRazorPages();
 
-/// <summary>
-/// Ativa suporte a sessões.
-/// </summary>
+// Ativa suporte a sessões.
 builder.Services.AddSession();
 
-/// <summary>
-/// Regista o serviço de envio de email (SendGrid).
-/// </summary>
+// Regista o serviço de envio de email (SendGrid).
 builder.Services.AddTransient<IEmailSender, SendGridEmailSender>();
 
-/// <summary>
-/// Configura cookie de autenticação com caminho de login personalizado.
-/// </summary>
+// Configura cookie de autenticação com caminho de login personalizado.
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
@@ -74,9 +56,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-/// <summary>
-/// Configura middleware dependendo do ambiente.
-/// </summary>
+// Configura middleware dependendo do ambiente.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -87,9 +67,7 @@ else
     app.UseHsts();
 }
 
-/// <summary>
-/// Configura middlewares essenciais para segurança, estáticos, autenticação e sessão.
-/// </summary>
+// Configura middlewares essenciais para segurança, estáticos, autenticação e sessão.
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -97,40 +75,34 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-/// <summary>
-/// Mapeia rotas para controllers API.
-/// </summary>
+// Mapeia rotas para controllers API.
 app.MapControllers();
 
-/// <summary>
-/// Configura rota padrão do MVC.
-/// </summary>
+// Configura rota padrão do MVC.
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-/// <summary>
-/// Mapeia Razor Pages, usadas para Identity.
-/// </summary>
+// Mapeia Razor Pages, usadas para Identity.
 app.MapRazorPages();
 
-/// <summary>
-/// Define cultura padrão para o sistema.
-/// </summary>
+// Define cultura padrão para o sistema.
 var cultureInfo = new CultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-/// <summary>
-/// Executa seed inicial da base de dados.
-/// </summary>
-using (var scope = app.Services.CreateScope())
+// Executa seed inicial da base de dados com try/catch seguro.
+try
 {
+    using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     await SeedData.InicializarAsync(services);
 }
+catch (Exception ex)
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "Erro ao executar o SeedData.");
+}
 
-/// <summary>
-/// Executa a aplicação.
-/// </summary>
+// Executa a aplicação.
 app.Run();
