@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using E.m.a.r.t.Data;
 using E.m.a.r.t.Models;
 using E.m.a.r.t.Helpers;
+using System.Linq;
 
 public class CarrinhoController : Controller
 {
@@ -18,7 +19,7 @@ public class CarrinhoController : Controller
     public IActionResult Checkout()
     {
         var utilizador = _context.Utilizadores.FirstOrDefault(u => u.UserName == User.Identity.Name);
-        var fotosCarrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
+        var fotosCarrinho = HttpContext.Session.GetObjectFromJson<List<FotografiaCarrinhoDTO>>("Carrinho") ?? new List<FotografiaCarrinhoDTO>();
 
         var model = new CarrinhoViewModel
         {
@@ -40,66 +41,86 @@ public class CarrinhoController : Controller
         return View(model);
     }
 
+    /// <summary>
+    /// Finaliza a compra das fotografias no carrinho e regista a compra no sistema.
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize]
     public IActionResult FinalizarCompra(CarrinhoViewModel model)
     {
-        var carrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
+        var carrinho = HttpContext.Session.GetObjectFromJson<List<FotografiaCarrinhoDTO>>("Carrinho") ?? new List<FotografiaCarrinhoDTO>();
         var utilizador = _context.Utilizadores.FirstOrDefault(u => u.UserName == User.Identity.Name);
 
-        if (utilizador != null && carrinho.Any())
+        if (utilizador == null)
         {
-            var novaCompra = new Compras
-            {
-                CompradorFK = utilizador.Id,
-                Data = DateTime.Now,
-                Estado = Estados.Pago,
-                ListaFotografiasCompradas = new List<Fotografias>()
-            };
-
-            foreach (var foto in carrinho)
-            {
-                var fotoDb = _context.Fotografias.Find(foto.Id);
-                if (fotoDb != null)
-                {
-                    novaCompra.ListaFotografiasCompradas.Add(fotoDb);
-                }
-            }
-
-            _context.Compras.Add(novaCompra);
-            _context.SaveChanges();
+            ModelState.AddModelError("", "Utilizador não autenticado.");
+            // Recarrega a mesma view
+            return View("Checkout", model);
         }
+
+        if (!carrinho.Any())
+        {
+            ModelState.AddModelError("", "O carrinho está vazio.");
+            return View("Checkout", model);
+        }
+
+        var novaCompra = new Compras
+        {
+            CompradorFK = utilizador.Id,
+            Data = DateTime.Now,
+            Estado = Estados.Pago,
+            ListaFotografiasCompradas = new List<Fotografias>()
+        };
+
+        foreach (var fotoDto in carrinho)
+        {
+            var fotoDb = _context.Fotografias.Find(fotoDto.Id);
+            if (fotoDb != null)
+            {
+                novaCompra.ListaFotografiasCompradas.Add(fotoDb);
+            }
+        }
+
+        _context.Compras.Add(novaCompra);
+        _context.SaveChanges();
 
         HttpContext.Session.Remove("Carrinho");
 
-        var comprasAtualizadas = _context.Compras
+        // Passa as compras atualizadas para a view
+        ViewBag.Compras = _context.Compras
             .Include(c => c.ListaFotografiasCompradas)
             .Where(c => c.CompradorFK == utilizador.Id)
             .ToList();
 
-        ViewBag.Compras = comprasAtualizadas;
+        // Podes querer limpar o model do carrinho aqui se estiveres a usar
 
-        return View("Checkout", new CarrinhoViewModel
-        {
-            Nome = model.Nome,
-            NIF = model.NIF,
-            Fotografias = new List<Fotografias>()
-        });
+        return View("Checkout", model);
     }
 
+    /// <summary>
+    /// Remove uma fotografia do carrinho de compras do utilizador.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize]
     public IActionResult RemoverDoCarrinho(int id)
     {
-        var carrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
+        var carrinho = HttpContext.Session.GetObjectFromJson<List<FotografiaCarrinhoDTO>>("Carrinho") ?? new List<FotografiaCarrinhoDTO>();
 
         var fotoARemover = carrinho.FirstOrDefault(f => f.Id == id);
         if (fotoARemover != null)
         {
             carrinho.Remove(fotoARemover);
-            HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
+
+            if (carrinho.Any())
+                HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
+            else
+                HttpContext.Session.Remove("Carrinho");
         }
 
         return RedirectToAction("Checkout");
@@ -108,14 +129,21 @@ public class CarrinhoController : Controller
     [HttpPost]
     public IActionResult Adicionar(int id)
     {
-        var carrinho = HttpContext.Session.GetObjectFromJson<List<Fotografias>>("Carrinho") ?? new List<Fotografias>();
+        var carrinho = HttpContext.Session.GetObjectFromJson<List<FotografiaCarrinhoDTO>>("Carrinho") ?? new List<FotografiaCarrinhoDTO>();
 
         if (!carrinho.Any(f => f.Id == id))
         {
             var foto = _context.Fotografias.FirstOrDefault(f => f.Id == id);
             if (foto != null)
             {
-                carrinho.Add(foto);
+                var fotoDto = new FotografiaCarrinhoDTO
+                {
+                    Id = foto.Id,
+                    Titulo = foto.Titulo,
+                    Ficheiro = foto.Ficheiro,
+                    Preco = foto.Preco
+                };
+                carrinho.Add(fotoDto);
                 HttpContext.Session.SetObjectAsJson("Carrinho", carrinho);
             }
         }
