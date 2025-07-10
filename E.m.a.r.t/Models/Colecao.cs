@@ -25,8 +25,7 @@ namespace E.m.a.r.t.Models
         public string? Descricao { get; set; }
 
         /// <summary>
-        /// Lista das fotografias pertencentes a esta coleção.
-        /// Inicializada como lista vazia.
+        /// Lista de fotografias associadas a esta coleção.
         /// </summary>
         public ICollection<Fotografias> ListaFotografias { get; set; } = new List<Fotografias>();
     }
