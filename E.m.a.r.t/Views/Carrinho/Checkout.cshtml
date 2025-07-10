@@ -40,11 +40,14 @@
                         <td>@foto.Titulo</td>
                         <td>@foto.Preco.ToString("C")</td>
                         <td>
-                            <form asp-action="RemoverDoCarrinho" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@foto.Id" />
-                                <button type="submit" class="btn btn-danger btn-sm">Remover</button>
-                            </form>
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm"
+                                    formaction="@Url.Action("RemoverDoCarrinho", "Carrinho")"
+                                    formmethod="post"
+                                    name="id"
+                                    value="@foto.Id">
+                                Remover
+                            </button>
                         </td>
                     </tr>
                 }
