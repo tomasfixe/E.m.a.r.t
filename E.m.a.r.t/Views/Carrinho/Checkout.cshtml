@@ -61,87 +61,25 @@ else
 
 <hr />
 
-<hr />
 <h4>Compras anteriores</h4>
-<div id="comprasAnteriores">
-    @if (ViewBag.Compras != null)
+
+@if (ViewBag.Compras != null)
+{
+    foreach (var compra in ViewBag.Compras as List<Compras>)
     {
-        foreach (var compra in ViewBag.Compras as List<Compras>)
-        {
-            <div class="mb-3 border rounded p-3">
-                <p><strong>Data:</strong> @compra.Data.ToShortDateString()</p>
-                <p><strong>Estado:</strong> @compra.Estado</p>
-                <ul>
-                    @foreach (var f in compra.ListaFotografiasCompradas)
-                    {
-                        <li>@f.Titulo - @f.Preco.ToString("C")</li>
-                    }
-                </ul>
-            </div>
-        }
+        <div class="mb-3 border rounded p-3">
+            <p><strong>Data:</strong> @compra.Data.ToShortDateString()</p>
+            <p><strong>Estado:</strong> @compra.Estado</p>
+            <ul>
+                @foreach (var f in compra.ListaFotografiasCompradas)
+                {
+                    <li>@f.Titulo - @f.Preco.ToString("C")</li>
+                }
+            </ul>
+        </div>
     }
-    else
-    {
-        <p>Sem compras registadas.</p>
-    }
-</div>
-
-
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form[asp-action="FinalizarCompra"]');
-            if (!form) {
-                console.error("Form FinalizarCompra não encontrado");
-                return;
-            }
-
-            form.addEventListener('submit', function(e) {
-                e.preventDefault(); // Impede o submit normal, evita recarregar página
-
-                const nome = form.querySelector('input[name="Nome"]').value;
-                const nif = form.querySelector('input[name="NIF"]').value;
-
-                const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
-
-                fetch('@Url.Action("FinalizarCompra", "Carrinho")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': token
-                    },
-                    body: JSON.stringify({ Nome: nome, NIF: nif })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if(data.success) {
-                        // Limpa a tabela do carrinho
-                        const tbody = document.querySelector('table tbody');
-                        tbody.innerHTML = '';
-
-                        // Atualiza as compras
-                        const comprasDiv = document.getElementById('comprasAnteriores');
-                        let html = '';
-                        data.compras.forEach(compra => {
-                            html += `<div class="mb-3 border rounded p-3">
-                                        <p><strong>Data:</strong> ${compra.Data}</p>
-                                        <p><strong>Estado:</strong> ${compra.Estado}</p>
-                                        <ul>`;
-                            compra.Fotografias.forEach(f => {
-                                html += `<li>${f.Titulo} - ${f.Preco}</li>`;
-                            });
-                            html += `</ul></div>`;
-                        });
-                        comprasDiv.innerHTML = html;
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('Erro ao finalizar compra.');
-                });
-            });
-        });
-    </script>
+}
+else
+{
+    <p>Sem compras registadas.</p>
 }
